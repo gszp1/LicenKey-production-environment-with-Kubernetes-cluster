@@ -8,11 +8,13 @@
         path: /mnt
         owner: "{{ ansible_user }}"
         state: directory
+        mode: '0755'
 
     - name: Create a directory for container registry
       ansible.builtin.file:
         path: /mnt/container-registry
         state: directory
+        mode: '0755'
 
     - name: Update apt cache
       ansible.builtin.apt:
