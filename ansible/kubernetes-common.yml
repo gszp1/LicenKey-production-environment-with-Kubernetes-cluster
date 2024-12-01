@@ -82,12 +82,6 @@
         state: directory
         mode: '0755'
 
-    - name: Download and dearmor Kubernetes GPG key
-      shell: |
-        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-      args:
-        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
-
     - name: Downloads Kubernetes GPG key
       ansible.builtin.get_url:
         url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
@@ -122,6 +116,7 @@
         path: /etc/default/kubelet
         line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
         create: true
+        mode: '0644'
 
     - name: Generate default containerd configuration
       ansible.builtin.shell: "containerd config default > /etc/containerd/config.toml"
