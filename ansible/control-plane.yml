@@ -1,0 +1,40 @@
+- name: Set up Control Plane
+  hosts: control_plane
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: Print pod network cidr
+      debug:
+        var: pod_network_cidr
+
+    - name: Check if kubeinit has been called
+      stat:
+        path: /etc/kubernetes/kubelet.conf
+      register: kubeinit_called
+
+    - name: Initialize the Kubernetes cluster using kubeadm
+      command: kubeadm init --apiserver-advertise-address="{{ node_ip }}" --apiserver-cert-extra-sans="{{ node_ip }}"  --node-name {{ ansible_hostname }} --pod-network-cidr="{{ pod_network_cidr }}"
+      when: kubeinit_called.stat.exists == false
+
+    - name: Setup kubeconfig for user
+      command: "{{ item }}"
+      with_items:
+        - mkdir -p /home/{{ ansible_user }}/.kube
+        - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
+        - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
+      when: kubeinit_called.stat.exists == false
+
+    - name: Copy the flannel manifest to the CP node
+      copy: src=./k8s/kube-flannel.yml dest=/tmp/kube-flannel.yml mode=0777
+
+    - name: Apply Flannel CNI manifest
+      become: false
+      shell: kubectl apply -f /tmp/kube-flannel.yml
+
+    - name: Generate join command
+      command: kubeadm token create --print-join-command
+      register: join_command
+
+    - name: Copy join command to local file
+      become: false
+      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="./tmp/join-command"

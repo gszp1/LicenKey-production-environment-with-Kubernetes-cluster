@@ -1,0 +1,1 @@
+{"virtualbox":{"/shared_storage":{"guestpath":"/shared_storage","hostpath":"/home/mateusz/inzy-inzy/serverless/data","disabled":false,"__vagrantfile":true},"/vagrant":{"guestpath":"/vagrant","hostpath":"/home/mateusz/inzy-inzy/serverless","disabled":false,"__vagrantfile":true}}}

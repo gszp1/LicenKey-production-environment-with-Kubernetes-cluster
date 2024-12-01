@@ -1,0 +1,17 @@
+- name: Set up Kubernetes worker node
+  hosts: worker
+  become: yes
+  gather_facts: true
+  tasks:
+    - name: Check if the node is already joined to the cluster
+      ansible.builtin.stat:
+        path: /etc/kubernetes/kubelet.conf
+      register: kubelet_conf
+
+    - name: Copy the join command to server location
+      copy: src=./tmp/join-command dest=/tmp/join-command.sh mode=0777
+      when: not kubelet_conf.stat.exists
+
+    - name: Join the node to cluster
+      command: sh /tmp/join-command.sh
+      when: not kubelet_conf.stat.exists

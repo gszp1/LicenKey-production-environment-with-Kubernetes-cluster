@@ -1,0 +1,5 @@
+{
+    "kubernetes_common": ["vm1", "vm2", "vm3"],
+    "control_plane": ["vm1"],
+    "worker": ["vm2", "vm3"]
+}
