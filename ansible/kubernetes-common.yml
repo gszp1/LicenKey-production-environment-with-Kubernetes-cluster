@@ -22,7 +22,7 @@
     - name: Install aptitude
       ansible.builtin.apt:
         name: aptitude
-        state: latest
+        state: present
         update_cache: true
 
     - name: Install required system packages
@@ -39,7 +39,7 @@
           - software-properties-common
           - jq
           - gpg
-        state: latest
+        state: present
         update_cache: true
 
     - name: Add Docker GPG apt Key
@@ -59,7 +59,7 @@
           - docker-ce
           - docker-ce-cli
           - docker
-        state: latest
+        state: present
         update_cache: true
 
     - name: Remove swapfile from /etc/fstab
