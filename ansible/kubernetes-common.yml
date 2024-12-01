@@ -88,6 +88,17 @@
       args:
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
+    - name: Downloads Kubernetes GPG key
+      ansible.builtin.get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+        dest: /tmp/kubernetes_release.key
+        mode: '0644'
+
+    - name: Dearmor k8s GPG key and store it to apt keyring
+      ansible.builtin.shell:
+        cmd: gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg < /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+
     - name: Add Kubernetes apt repository
       ansible.builtin.apt_repository:
         repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /'
