@@ -1,6 +1,6 @@
 - name: Set up Control Plane
   hosts: control_plane
-  become: yes
+  become: true
   gather_facts: true
   tasks:
     - name: Print pod network cidr
