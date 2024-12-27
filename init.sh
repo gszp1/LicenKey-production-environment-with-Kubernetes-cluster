@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p ./tmp
+mkdir -p ./ansible/tmp
 vagrant up
 python3 ./scripts/get_ansible_hosts.py ./config/cluster_config.json
 ansible-playbook -i ./build/hosts.ini ./ansible/kubernetes-common.yml
