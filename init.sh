@@ -9,4 +9,5 @@ ansible-playbook -i ./build/hosts.ini ./ansible/worker.yml
 ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/nfs.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/csi.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/docker-registry.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/docker-registry-node-config.yaml
 # rm -rf ./tmp
