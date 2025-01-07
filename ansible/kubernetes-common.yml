@@ -62,6 +62,28 @@
         state: latest
         update_cache: true
 
+    - name: Set private repository data in docker daemon config
+      ansible.builtin.copy:
+        dest: /etc/docker/daemon.json
+        content: |
+          {
+            "insecure-registries": [
+              "docker-registry-sv.docker-registry-ns.svc.cluster.local:5000"
+            ]
+          }
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Reload docker daemon
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Restart docker daemon
+      ansible.builtin.systemd:
+        name: docker
+        state: restarted
+
     - name: Remove swapfile from /etc/fstab
       mount:
         name: "{{ item }}"
