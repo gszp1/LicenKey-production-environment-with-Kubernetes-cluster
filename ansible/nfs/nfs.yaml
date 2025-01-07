@@ -1,0 +1,9 @@
+- name: Set up nfs for all nodes in cluster
+  hosts: kubernetes_common
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Install nfs commons
+      ansible.builtin.apt:
+        name: nfs-common
+        state: present

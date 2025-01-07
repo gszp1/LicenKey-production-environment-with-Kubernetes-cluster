@@ -1,6 +1,0 @@
-- name: Creates internal docker registry for k8s cluster
-  hosts: control_plane
-  become: yes
-  gather_facts: true
-  tasks:
-    - name 
