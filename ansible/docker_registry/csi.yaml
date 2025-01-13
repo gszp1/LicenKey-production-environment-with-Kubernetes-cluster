@@ -1,0 +1,15 @@
+- name: Sets up Container Storage Interface
+  hosts: control_plane
+  gather_facts: true
+  tasks:
+    - name: Ensure installation script for driver is mounted
+      ansible.builtin.file:
+        path: /shared_storage/csi-driver-nfs/deploy/install-driver.sh
+        state: file
+        mode: '0755'
+    - name: Install CSI driver
+      ansible.builtin.command:
+        cmd: ./deploy/install-driver.sh v4.9.0 local
+        chdir: /shared_storage/csi-driver-nfs
+      args:
+        creates: /var/lib/kubelet/plugins/kubernetes.io/nfs-csi

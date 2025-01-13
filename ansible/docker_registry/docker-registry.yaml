@@ -1,0 +1,13 @@
+- name: Set up docker registry for k8s cluster
+  hosts: control_plane
+  gather_facts: true
+  tasks:
+    - name: Create docker-registry namespace
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/docker-registry-ns.yaml
+    - name: Create docker-registry persistentVolume and PV Claim
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/docker-registry-pv.yaml
+    - name: Create docker registry and registry service
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/docker-registry.yaml

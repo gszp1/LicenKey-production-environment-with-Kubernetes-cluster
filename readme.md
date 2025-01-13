@@ -1,4 +1,10 @@
 # Meaning of the files residing in this directory
+
+# Before the cluster is being setup, following commands have to be run:
+- `sudo mkdir -p /home/nfs`
+- 
+
+
 ## init.sh - setup cluster
 - `vagrant up` - setup 3 virtual machines that can communicate with each other,
 - `python3 ./scripts/get_ansible_hosts.py ./config/cluster_config.json` - initialize `hosts.ini` hosts inventory file,

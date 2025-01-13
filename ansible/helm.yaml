@@ -1,0 +1,45 @@
+- name: Install Helm package manager on Master Node
+  hosts: control_plane
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Download GPG key
+      ansible.builtin.get_url:
+        url: https://baltocdn.com/helm/signing.asc
+        dest: /tmp/helm-signing.asc
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Dearmor GPG key
+      ansible.builtin.command:
+        cmd: "gpg --dearmor -o /usr/share/keyrings/helm.gpg /tmp/helm-signing.asc"
+        creates: /usr/share/keyrings/helm.gpg
+
+    - name: Install apt-transport-https
+      ansible.builtin.apt:
+        name: apt-transport-https
+        state: present
+
+    - name: Check architecture
+      ansible.builtin.command:
+        cmd: dpkg --print-architecture
+      register: dpkg_output
+
+    - name: Add Helm package repository
+      ansible.builtin.copy:
+        dest: /etc/apt/sources.list.d/helm-stable-debian.list
+        content: "deb [arch={{ dpkg_output.stdout }} signed-by=/usr/share/keyrings/helm.gpg] https://baltocdn.com/helm/stable/debian/ all main"
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Update local package index
+      ansible.builtin.apt:
+        update_cache: true
+
+    - name: Install Helm
+      ansible.builtin.apt:
+        pkg: helm
+        state: present
+        update_cache: true
