@@ -4,12 +4,79 @@
   - name: Add helm repository for ingress-nginx
     ansible.builtin.command:
       cmd: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+
   - name: Update helm repositories
     ansible.builtin.command:
       cmd: helm repo update
+
   - name: Install ingress-nginx
     ansible.builtin.command:
       cmd: >
         helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx
         --namespace ingress-nginx --create-namespace
+        --set controller.service.type=LoadBalancer
         --set controller.admissionWebhooks.enabled=true
+
+  - name: Wait till ingress-controller obtains external IP from metallb
+    ansible.builtin.command:
+      cmd: >
+        kubectl get service/ingress-nginx-controller
+        -n ingress-nginx
+        -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    register: check_external_ip
+    until: check_external_ip != ""
+    retries: 10
+    delay: 6
+    changed_when: false
+
+  - name: Retrieve ingress-controller external IP
+    ansible.builtin.command:
+      cmd: >
+        kubectl get service/ingress-nginx-controller
+        -n ingress-nginx
+        -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+    register: external_ip
+    changed_when: false
+    failed_when: external_ip.stdout == ""
+
+  - name: Get coredns configmap
+    kubernetes.core.k8s_info:
+      api_version: v1
+      kind: ConfigMap
+      name: coredns
+      namespace: kube-system
+    register: coredns_config_map
+
+  - name: Create dns host name for external IP
+    vars:
+      new_entry: |
+        hosts: {
+          {{ external_ip.stdout }} docker-registry.cluster.local
+          fallthrough
+        }
+    ansible.builtin.set_fact:
+      updated_corefile: >-
+        {{ coredns_config_map.resources[0].data.Corefile
+          | regex_replace('(?ms)(.+forward \\. /etc/resolv\\.conf \\{[^}]+\\})',
+              '\\1\n' ~ new_entry | regex_escape )
+        }}
+
+  - name: Update CoreDNS Configmap
+    kubernetes.core.k8s:
+      state: present
+      definition:
+        apiVersion: v1
+        kind: ConfigMap
+        metadata:
+          name: coredns
+          namespace: kube-system
+        data:
+          Corefile: "{{ updated_corefile }}"
+    register: coredns_update_result
+
+  - name: Restart CoreDNS
+    kubernetes.core.k8s:
+      state: restarted
+      kind: Deployment
+      namespace: kube-system
+      name: coredns

@@ -16,3 +16,15 @@
     - name: Install MetalLB
       ansible.builtin.command:
         cmd: helm install metallb metallb/metallb --namespace metallb-system
+
+    - name: Wait for MetalLB to be up
+      ansible.builtin.command:
+        cmd: kubectl rollout status deployment/metallb-controller -n metallb-system
+      register: metallb_status
+      until: metallb_status.stdout is search("successfully rolled out")
+      retries: 10
+      delay: 6
+
+    - name: Create configuration objects
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/configuration/ip-address-pool.yaml
