@@ -1,0 +1,14 @@
+- name: Adds nginx ingress-controller
+  hosts: control_plane
+  tasks:
+  - name: Add helm repository for ingress-nginx
+    ansible.builtin.command:
+      cmd: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+  - name: Update helm repositories
+    ansible.builtin.command:
+      cmd: helm repo update
+  - name: Install ingress-nginx
+    ansible.builtin.command:
+      cmd: >
+        helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx
+        --namespace ingress-nginx --create-namespace

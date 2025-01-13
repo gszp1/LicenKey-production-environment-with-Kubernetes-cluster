@@ -6,7 +6,7 @@
       ansible.builtin.shell: |
         helm repo add jetstack https://charts.jetstack.io --force-update
 
-    - name: Installs cert-manager Helm chart
+    - name: Install cert-manager Helm chart
       ansible.builtin.shell: |
         helm install \
           cert-manager jetstack/cert-manager \
