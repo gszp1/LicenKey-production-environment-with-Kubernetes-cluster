@@ -1,0 +1,27 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: mat-grz-issuer
+spec:
+  selfSigned: {}
+
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mat-grz-cert
+  namespace: docker-registry-ns
+spec:
+  secretName: mat-grz-cert-secret
+  dnsNames:
+    - docker-registry-sv.docker-registry-ns.svc.cluster.local
+    - docker.registry.com
+    - 192.168.56.1
+    - 192.168.1.57
+  issuerRef:
+    name: mat-grz-issuer
+    kind: ClusterIssuer
+  privateKey:
+    algorithm: RSA
+    size: 2048

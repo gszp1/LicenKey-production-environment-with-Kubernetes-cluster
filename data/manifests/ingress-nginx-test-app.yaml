@@ -1,0 +1,22 @@
+#First run: kubectl create deployment hello-world --image=k8s.gcr.io/echoserver:1.4
+#Next: kubectl expose deployment hello-world --port=8080 --target-port=8080
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: test-ingress
+  namespace: default
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: example.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-service
+            port:
+              number: 80

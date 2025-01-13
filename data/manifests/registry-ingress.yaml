@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: docker-registry-ingress
+  namespace: docker-registry-ns
+  annotations:
+    cert-manager.io/cluster-issuer: mat-grz-issuer
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - docker.registry.com
+    secretName: mat-grz-cert-secret
+  rules:
+  - host: docker.registry.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: docker-registry-sv
+            port:
+              number: 30001
