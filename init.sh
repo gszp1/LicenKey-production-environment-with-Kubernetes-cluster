@@ -9,9 +9,9 @@ fi
 
 # Create and configure k8s cluster on VMs
 python3 ./scripts/get_ansible_hosts.py ./config/cluster_config.json
-ansible-playbook -i ./build/hosts.ini ./ansible/kubernetes-common.yml
-ansible-playbook -i ./build/hosts.ini ./ansible/control-plane.yml
-ansible-playbook -i ./build/hosts.ini ./ansible/worker.yml
+ansible-playbook -i ./build/hosts.ini ./ansible/kubernetes-common.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/control-plane.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/worker.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/nfs.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/csi.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/helm.yaml
