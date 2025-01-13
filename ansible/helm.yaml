@@ -1,7 +1,6 @@
 - name: Install Helm package manager on Master Node
   hosts: control_plane
   become: true
-  gather_facts: true
   tasks:
     - name: Download GPG key
       ansible.builtin.get_url:

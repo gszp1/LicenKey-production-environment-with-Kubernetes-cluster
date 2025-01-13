@@ -1,0 +1,18 @@
+# MetalLB
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: private-network-address-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 192.168.56.10-192.168.56.20
+
+---
+
+apiVersion: metallb.io/v1beta1
+kind: L2Advertisement
+metadata:
+  name: private-network-l2-advertisement
+  namespace: metallb-system
+spec: {}
