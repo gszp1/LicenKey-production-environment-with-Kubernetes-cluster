@@ -1,5 +1,5 @@
 #!/bin/bash
-ENTRY_SCRIPT="init.sh"
+ENTRY_SCRIPT="playbooks.sh"
 PLAYBOOKS_SCRIPT="new_playbooks.sh"
 if [[ ! -f "$ENTRY_SCRIPT" || ! -f "$PLAYBOOKS_SCRIPT" ]]; then
     echo "One of the scripts does not exist."

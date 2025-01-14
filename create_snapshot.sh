@@ -2,7 +2,11 @@
 
 vagrant snapshot delete cluster-snapshot || echo "No previously saved snapshots - creating new snapshot"
 
-./init.sh
+mkdir -p ./ansible/tmp
+if ! vagrant up; then
+    echo "Failed to create VMs."
+    exit 1
+fi
 
 if ! vagrant status | grep -v "running" | grep -q "state";then
     echo "Skipping snapshot creation - at least one of the VMs is not running."
@@ -13,3 +17,6 @@ else
         echo "Snapshot with name 'cluster-snapshot' created."
     fi 
 fi
+
+python3 ./scripts/get_ansible_hosts.py ./config/cluster_config.json
+./playbooks.sh
