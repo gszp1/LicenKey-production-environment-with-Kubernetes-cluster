@@ -79,7 +79,7 @@
           name: coredns
           namespace: kube-system
         data:
-          Corefile: "{{ lookup('file', '../data/share/Corefile') }}"
+          Corefile: "{{ lookup('file', '../../data/share/Corefile') }}"
     register: coredns_update_result
 
   - name: Restart CoreDNS

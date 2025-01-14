@@ -12,6 +12,7 @@
         state: present
 
     - name: Generate password file contents
+      become: true
       ansible.builtin.docker_container:
         name: htpasswd_generator
         image: httpd:2
