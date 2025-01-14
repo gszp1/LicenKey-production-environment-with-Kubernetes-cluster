@@ -1,0 +1,36 @@
+- name: Adds authentication with httpasswd
+  hosts: control_plane
+  gather_facts: true
+  vars:
+    user: docker-user
+    password: docker-password
+  tasks:
+    - name: Ensure that apache2-utils are installed
+      become: true
+      ansible.builtin.apt:
+        name: apache2-utils
+        state: present
+
+    - name: Generate password file contents
+      ansible.builtin.docker_container:
+        name: htpasswd_generator
+        image: httpd:2
+        command: htpasswd -Bbn {{ user }} {{ password }}
+        state: started
+        detach: false
+        cleanup: true
+      register: htpasswd_output
+
+    - name: Save password file contents to file
+      become: true
+      ansible.builtin.copy:
+        content: "{{ htpasswd_output.stdout }}"
+        dest: "/shared_storage/share/htpasswd"
+        mode: "0644"
+
+    - name: Create secret with htpasswd file
+      ansible.builtin.command:
+        cmd: >
+          kubectl create secret generic registry-auth
+          --from-file=auth=/shared_storage/share/htpasswd
+          -n docker-registry-ns

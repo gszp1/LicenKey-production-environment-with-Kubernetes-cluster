@@ -4,7 +4,10 @@ metadata:
   name: routing-ingress
   namespace: docker-registry-ns
   annotations:
-    cert-manager.io/cluster-issuer: mat-grz-issuer
+    cert-manager.io/issuer: mat-grz-issuer
+    nginx.ingress.kubernetes.io/auth-type: basic
+    nginx.ingress.kubernetes.io/auth-secret: "registry-auth"
+    nginx.ingress.kubernetes.io/auth-realm: "Registry Authentication"
 spec:
   ingressClassName: nginx
   tls:
