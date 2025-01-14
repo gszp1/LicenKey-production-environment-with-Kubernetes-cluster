@@ -24,7 +24,7 @@
         -n ingress-nginx
         -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
     register: check_external_ip
-    until: check_external_ip != ""
+    until: check_external_ip.stdout != ""
     retries: 10
     delay: 6
     changed_when: false
@@ -39,6 +39,11 @@
     changed_when: false
     failed_when: external_ip.stdout == ""
 
+  - name: Print retrieved IP
+    ansible.builtin.debug:
+      msg: "{{ external_ip.stdout }}"
+
+
   - name: Get coredns configmap
     kubernetes.core.k8s_info:
       api_version: v1
@@ -47,19 +52,22 @@
       namespace: kube-system
     register: coredns_config_map
 
-  - name: Create dns host name for external IP
-    vars:
-      new_entry: |
-        hosts: {
+  - name: Save config map to file
+    ansible.builtin.copy:
+      content: "{{ coredns_config_map.resources[0].data.Corefile }}"
+      dest: /shared_storage/share/Corefile
+      mode: "0644"
+
+  - name: Update config map values
+    ansible.builtin.blockinfile:
+      path: /shared_storage/share/Corefile
+      insertbefore: '^}$'
+      marker: "# {mark} ANSIBLE MANAGED HOSTS BLOCK"
+      block: |
+        hosts {
           {{ external_ip.stdout }} docker-registry.cluster.local
           fallthrough
         }
-    ansible.builtin.set_fact:
-      updated_corefile: >-
-        {{ coredns_config_map.resources[0].data.Corefile
-          | regex_replace('(?ms)(.+forward \\. /etc/resolv\\.conf \\{[^}]+\\})',
-              '\\1\n' ~ new_entry | regex_escape )
-        }}
 
   - name: Update CoreDNS Configmap
     kubernetes.core.k8s:
@@ -71,12 +79,10 @@
           name: coredns
           namespace: kube-system
         data:
-          Corefile: "{{ updated_corefile }}"
+          Corefile: "{{ lookup('file', '../data/share/Corefile') }}"
     register: coredns_update_result
 
   - name: Restart CoreDNS
-    kubernetes.core.k8s:
-      state: restarted
-      kind: Deployment
-      namespace: kube-system
-      name: coredns
+    ansible.builtin.command:
+      cmd: kubectl rollout restart deployment/coredns -n kube-system
+    when: coredns_update_result.changed
