@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Create VMs
+# Creates Virtual Machines with kubernetes cluster
+
 mkdir -p ./ansible/tmp
 if ! vagrant up; then
     echo "Failed to create VMs."
