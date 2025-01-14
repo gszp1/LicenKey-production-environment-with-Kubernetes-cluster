@@ -15,10 +15,7 @@ metadata:
 spec:
   secretName: mat-grz-cert-secret
   dnsNames:
-    - docker-registry-sv.docker-registry-ns.svc.cluster.local
-    - docker.registry.com
-    - 192.168.56.1
-    - 192.168.1.57
+    - docker-registry.cluster.local
   issuerRef:
     name: mat-grz-issuer
     kind: ClusterIssuer

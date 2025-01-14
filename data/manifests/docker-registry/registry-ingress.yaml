@@ -9,10 +9,10 @@ spec:
   ingressClassName: nginx
   tls:
   - hosts:
-    - docker.registry.com
+    - docker-registry.cluster.local
     secretName: mat-grz-cert-secret
   rules:
-  - host: docker.registry.com
+  - host: docker-registry.cluster.local
     http:
       paths:
       - path: /
@@ -21,4 +21,4 @@ spec:
           service:
             name: docker-registry-sv
             port:
-              number: 30001
+              number: 5000
