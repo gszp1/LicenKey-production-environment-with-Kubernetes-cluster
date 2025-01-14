@@ -5,12 +5,19 @@
     - name: Create docker-registry namespace
       ansible.builtin.command:
         cmd: kubectl apply -f /shared_storage/manifests/docker-registry/docker-registry-ns.yaml
+
     - name: Create Certificate and ClusterIssuer
       ansible.builtin.command:
         cmd: kubectl apply -f /shared_storage/manifests/docker-registry/certificate.yaml
+
     - name: Create docker-registry persistentVolume and PV Claim
       ansible.builtin.command:
         cmd: kubectl apply -f /shared_storage/manifests/docker-registry/docker-registry-pv.yaml
+
     - name: Create docker registry and registry service
       ansible.builtin.command:
         cmd: kubectl apply -f /shared_storage/manifests/docker-registry/docker-registry.yaml
+
+    - name: Create ingress rule for registry
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/docker-registry/registry-ingress.yaml

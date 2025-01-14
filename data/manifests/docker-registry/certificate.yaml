@@ -1,9 +1,36 @@
+# CA Certificate
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
-  name: mat-grz-issuer
+  name: mat-grz-cert-ca-issuer
 spec:
   selfSigned: {}
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mat-grz-cert-ca
+  namespace: cert-manager
+spec: 
+  isCA: true
+  commonName: mat-grz-ca
+  secretName: mat-grz-ca-secret
+  issuerRef:
+    name: mat-grz-cert-ca-issuer
+    kind: ClusterIssuer
+
+---
+
+# Leaf Certificate
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: mat-grz-issuer
+  namespace: docker-registry-ns
+spec:
+  ca:
+    secretName: mat-grz-ca-secret
 
 ---
 
@@ -18,7 +45,7 @@ spec:
     - docker-registry.cluster.local
   issuerRef:
     name: mat-grz-issuer
-    kind: ClusterIssuer
+    kind: Issuer
   privateKey:
     algorithm: RSA
     size: 2048

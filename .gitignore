@@ -2,3 +2,4 @@
 .vagrant
 ansible/tmp
 /data/share/Corefile
+/data/share/ca.crt

@@ -1,0 +1,16 @@
+- name: Retrieves certificate and moves it to shared directory
+  hosts: control_plane
+  tasks:
+    - name: Retrieve CA certificate
+      ansible.builtin.command:
+        cmd: >
+          kubectl get secret/mat-grz-ca-secret
+          -n cert-manager
+          -o jsonpath='{.data.ca\.crt}'
+      register: encoded_cert
+
+    - name: Decode cert and save it to file
+      ansible.builtin.copy:
+        content: "{{ encoded_cert.stdout | b64decode }}"
+        dest: /shared_storage/share/ca.crt
+        mode: '0644'
