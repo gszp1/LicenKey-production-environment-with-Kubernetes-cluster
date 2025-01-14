@@ -1,0 +1,6 @@
+- name: Creates ingress rule for docker registry
+  hosts: control_plane
+  tasks:
+    - name: Create ingress rule for registry
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/routing/routing-ingress.yaml

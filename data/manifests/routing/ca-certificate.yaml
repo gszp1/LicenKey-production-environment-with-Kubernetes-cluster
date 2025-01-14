@@ -1,0 +1,21 @@
+# CA Certificate
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: mat-grz-cert-ca-issuer
+spec:
+  selfSigned: {}
+---
+
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: mat-grz-cert-ca
+  namespace: routing
+spec: 
+  isCA: true
+  commonName: mat-grz-ca
+  secretName: mat-grz-ca-secret
+  issuerRef:
+    name: mat-grz-cert-ca-issuer
+    kind: ClusterIssuer

@@ -1,0 +1,14 @@
+- name: Creates routing objects and dependant objects
+  hosts: control_plane
+  tasks:
+    - name: Create namespace 'routing'
+      ansible.builtin.command:
+        cmd: kubectl create namespace routing
+
+    - name: Create CA certificate
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/routing/ca-certificate.yaml
+
+    - name: Create registry certificate
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/routing/registry-certificate.yaml

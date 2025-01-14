@@ -1,8 +1,8 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: docker-registry-ingress
-  namespace: docker-registry-ns
+  name: routing-ingress
+  namespace: routing
   annotations:
     cert-manager.io/cluster-issuer: mat-grz-issuer
 spec:
@@ -19,6 +19,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: docker-registry-sv
+            name: docker-registry-sv.docker-registry-ns
             port:
               number: 5000
