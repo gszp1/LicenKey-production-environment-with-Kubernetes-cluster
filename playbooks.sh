@@ -8,8 +8,8 @@ ansible-playbook -i ./build/hosts.ini ./ansible/helm.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/cert-manager.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/metallb/metallb.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/nginx-ingress.yaml
-ansible-playbook -i ./build/hosts.ini ./ansible/routing/certificates.yaml
 ansible-playbook -i ./build/hosts.ini ./ansible/docker_registry/docker-registry.yaml
-ansible-playbook -i ./build/hosts.ini ./ansible/routing/registry-external-name.yaml
-ansible-playbook -i ./build/hosts.ini ./ansible/routing/routing-ingress.yaml
-ansible-playbook -i ./build/hosts.ini ./ansible/routing/share-certificate.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry-routing/certificates.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry-routing/routing-ingress.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry-routing/share-certificate.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry-routing/tls-nodes-config.yaml

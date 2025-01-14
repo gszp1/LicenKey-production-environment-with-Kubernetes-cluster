@@ -1,0 +1,17 @@
+- name: Adds authentication with httpasswd
+  hosts: control_plane
+  tasks:
+    - name: Ensure that apache2-utils are installed
+      become: true
+      ansible.builtin.apt:
+        name: apache2-utils
+        state: present
+
+    - name: Create directory for password file
+      ansible.builtin.file:
+        path: "/home/{{ ansible_user }}"
+        
+            - name: Create a directory for container registry
+      ansible.builtin.file:
+        path: /mnt/container-registry
+        state: directory

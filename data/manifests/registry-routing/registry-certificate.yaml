@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Issuer
 metadata:
   name: mat-grz-issuer
-  namespace: routing
+  namespace: docker-registry-ns
 spec:
   ca:
     secretName: mat-grz-ca-secret
@@ -14,7 +14,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: mat-grz-cert
-  namespace: routing
+  namespace: docker-registry-ns
 spec:
   secretName: mat-grz-cert-secret
   dnsNames:

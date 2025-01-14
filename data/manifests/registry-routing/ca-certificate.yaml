@@ -11,7 +11,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: mat-grz-cert-ca
-  namespace: routing
+  namespace: docker-registry-ns
 spec: 
   isCA: true
   commonName: mat-grz-ca
