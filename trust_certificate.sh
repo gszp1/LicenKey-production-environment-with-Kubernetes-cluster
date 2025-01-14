@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sudo rm ./usr/local/share/ca-certificates
+sudo rm ./usr/local/share/ca-certificates/ca.crt
 
 sudo cp ./data/share/ca.crt /usr/local/share/ca-certificates/ca.crt
 

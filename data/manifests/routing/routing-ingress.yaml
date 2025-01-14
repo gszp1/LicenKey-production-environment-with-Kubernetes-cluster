@@ -19,6 +19,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: docker-registry-sv.docker-registry-ns
+            name: docker-registry-external-sv
             port:
               number: 5000

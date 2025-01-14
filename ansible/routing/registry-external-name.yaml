@@ -1,0 +1,6 @@
+- name: Create external name service to connect with service from different namespace
+  hosts: control_plane
+  tasks:
+    - name: Create service of ExternalName type
+      ansible.builtin.command:
+        cmd: kubectl apply -f /shared_storage/manifests/routing/registry-external-name.yaml
