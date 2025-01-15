@@ -13,15 +13,14 @@
 
     - name: Generate password file contents
       become: true
-      community.docker.docker_container:
-        name: htpasswd_generator
-        image: httpd:2
-        command: ["htpasswd", "-Bbn", "{{ user }}", "{{ password }}"]
-        detach: false
-        cleanup: true
-        state: present
+      ansible.builtin.shell: |
+        htpasswd -Bbn {{ user }} {{ password }}
       register: htpasswd_output
+      changed_when: false
 
+    - name: Print htpasswd content
+      ansible.builtin.debug:
+        msg: "{{ htpasswd_output.stdout }}"
 
     - name: Save password file contents to file
       become: true
@@ -41,4 +40,4 @@
             namespace: docker-registry-ns
           type: Opaque
           data:
-            auth: "{{ lookup('file', '/shared_storage/share/htpasswd') }}"
+            auth: "{{ htpasswd_output.stdout | b64encode}}"
