@@ -1,4 +1,0 @@
-sudo rm /lib/systemd/system/nfs-common.service
-sudo systemctl daemon-reload
-sudo systemctl start nfs-common
-wget -qO- http://docker-registry-sv.docker-registry-ns.svc.cluster.local:5000/v2/ - dns

@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# Runs vagrant to create virtual machines on which cluster will be run
+# Creates Snapshot with machines state before cluster setup
+# Runs playbooks that create cluster on virtual machines
+
 vagrant snapshot delete cluster-snapshot || echo "No previously saved snapshots - creating new snapshot"
 
 mkdir -p ./ansible/tmp

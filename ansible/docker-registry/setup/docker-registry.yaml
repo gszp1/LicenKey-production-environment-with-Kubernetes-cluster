@@ -1,0 +1,18 @@
+- name: Set up docker registry for k8s cluster
+  hosts: control_plane
+  gather_facts: true
+  tasks:
+    - name: Create docker-registry namespace
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/docker-registry/docker-registry-ns.yaml
+
+    - name: Create docker-registry persistentVolume and PV Claim
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/docker-registry/docker-registry-pv.yaml
+
+    - name: Create docker registry and registry service
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/docker-registry/docker-registry.yaml

@@ -1,0 +1,34 @@
+- name: Adds MetalLB to the cluster.
+  hosts: control_plane
+  tasks:
+    - name: Get MetalLB Helm repository
+      kubernetes.core.helm_repository:
+        repo_name: metallb
+        repo_url: https://metallb.github.io/metallb
+        state: present
+
+    - name: Update Helm repositories
+      ansible.builtin.command:
+        cmd: helm repo update
+      changed_when: false
+
+    - name: Install MetalLB
+      kubernetes.core.helm:
+        chart_ref: metallb/metallb
+        name: metallb
+        release_namespace: metallb-system
+        create_namespace: true
+
+    - name: Wait untill metallb-controller is up
+      kubernetes.core.k8s_info:
+        kind: Deployment
+        wait: true
+        name: metallb-controller
+        namespace: metallb-system
+        wait_sleep: 6
+        wait_timeout: 60
+
+    - name: Create MetalLB configuration objects
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/configuration/ip-address-pool.yaml

@@ -24,6 +24,7 @@
       ansible.builtin.command:
         cmd: dpkg --print-architecture
       register: dpkg_output
+      changed_when: false
 
     - name: Add Helm package repository
       ansible.builtin.copy:

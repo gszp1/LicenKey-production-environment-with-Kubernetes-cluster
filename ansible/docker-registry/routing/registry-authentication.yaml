@@ -12,14 +12,15 @@
         state: present
 
     - name: Generate password file contents
-      ansible.builtin.docker_container:
-        name: htpasswd_generator
-        image: httpd:2
-        command: htpasswd -Bbn {{ user }} {{ password }}
-        state: started
-        detach: false
-        cleanup: true
+      become: true
+      ansible.builtin.shell: |
+        htpasswd -Bbn {{ user }} {{ password }}
       register: htpasswd_output
+      changed_when: false
+
+    - name: Print htpasswd content
+      ansible.builtin.debug:
+        msg: "{{ htpasswd_output.stdout }}"
 
     - name: Save password file contents to file
       become: true
@@ -29,8 +30,14 @@
         mode: "0644"
 
     - name: Create secret with htpasswd file
-      ansible.builtin.command:
-        cmd: >
-          kubectl create secret generic registry-auth
-          --from-file=auth=/shared_storage/share/htpasswd
-          -n docker-registry-ns
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: registry-auth
+            namespace: docker-registry-ns
+          type: Opaque
+          data:
+            auth: "{{ htpasswd_output.stdout | b64encode}}"

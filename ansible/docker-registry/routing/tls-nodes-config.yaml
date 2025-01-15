@@ -1,0 +1,42 @@
+- name: Configures nodes to be able to use TLS communication
+  hosts: kubernetes_common
+  tasks:
+    - name: Retrieve ingress IP from file
+      ansible.builtin.command:
+        cmd: cat "/shared_storage/share/nginx-ingress-ip.txt"
+      register: ingress_ip
+      changed_when: false
+
+    - name: Check if host entry for ingress-controller exists
+      become: true
+      ansible.builtin.command:
+        cmd: grep "docker-registry.cluster.local" /etc/hosts
+      register: grep_hosts
+      failed_when: grep_hosts.rc not in [0, 1]
+      changed_when: false
+      ignore_errors: true
+
+    - name: Create host entry for ingress-controller
+      become: true
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ ingress_ip.stdout }} docker-registry.cluster.local"
+        state: present
+      when: grep_hosts.rc == 1
+
+    - name: Copy CA certificate
+      become: true
+      ansible.builtin.copy:
+        src: /shared_storage/share/ca.crt
+        dest: /usr/local/share/ca-certificates/ca.crt
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0644"
+
+    - name: Reload ca-certificates
+      become: true
+      ansible.builtin.command:
+        cmd: update-ca-certificates
+      register: output
+      changed_when: output.stdout != ""

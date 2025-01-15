@@ -1,0 +1,68 @@
+- name: Set up Control Plane
+  hosts: control_plane
+  become: true
+  gather_facts: true
+  tasks:
+    - name: Print pod network cidr
+      ansible.builtin.debug:
+        var: pod_network_cidr
+
+    - name: Check if kubeinit has been called
+      ansible.builtin.stat:
+        path: /etc/kubernetes/kubelet.conf
+      register: kubeinit_called
+
+    - name: Initialize the Kubernetes cluster using kubeadm
+      ansible.builtin.command:
+        cmd: >
+          kubeadm init --apiserver-advertise-address="{{ node_ip }}"
+          --apiserver-cert-extra-sans="{{ node_ip }}"
+          --node-name {{ ansible_hostname }}
+          --pod-network-cidr="{{ pod_network_cidr }}"
+        creates: /etc/kubernetes/admin.conf
+      when: not kubeinit_called.stat.exists
+
+    - name: Create .kube directory
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.kube
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+      when: not kubeinit_called.stat.exists
+
+    - name: Copy admin.conf to user .kube config
+      ansible.builtin.copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/{{ ansible_user }}/.kube/config
+        remote_src: true
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0600'
+      when: not kubeinit_called.stat.exists
+
+    - name: Copy the flannel manifest to the CP node
+      ansible.builtin.copy:
+        src: ../flannel/kube-flannel.yml
+        dest: /tmp/kube-flannel.yml
+        mode: "0777"
+
+    - name: Apply Flannel CNI manifest
+      become: false
+      kubernetes.core.k8s:
+        state: present
+        src: /tmp/kube-flannel.yml
+
+    - name: Generate join command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
+      register: join_command
+      changed_when: false
+
+    - name: Copy join command to local file
+      become: false
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ join_command.stdout_lines[0] }}"
+        dest: "../tmp/join-command"
+        mode: "0644"
