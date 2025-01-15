@@ -20,4 +20,8 @@
           docker login docker-registry.cluster.local
           --username "{{ user_name.stdout }}"
           --password "{{ user_password.stdout }}"
+      register: login_result
+      until: login_result.rc == 0
+      retries: 5
+      delay: 10
       changed_when: false

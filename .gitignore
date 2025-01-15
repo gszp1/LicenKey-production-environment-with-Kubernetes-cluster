@@ -7,4 +7,4 @@ ansible/tmp
 /data/share/nginx-ingress-ip.txt
 /data/share/password
 /data/share/user
-/data/share/docker-credentials.json
+/data/share/docker-credentials-json
