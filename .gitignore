@@ -4,3 +4,4 @@ ansible/tmp
 /data/share/Corefile
 /data/share/ca.crt
 /data/share/hpasswd
+/data/share/nginx-ingress-ip.txt

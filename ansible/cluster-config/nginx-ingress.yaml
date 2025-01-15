@@ -48,6 +48,11 @@
       ansible.builtin.debug:
         msg: "{{ external_ip.stdout }}"
 
+    - name: Save Ingress IP to file nginx-ingress-ip
+      ansible.builtin.copy:
+        content: "{{ external_ip.stdout }}"
+        dest: "/shared_storage/share/nginx-ingress-ip.txt"
+        mode: "755"
 
     - name: Get coredns configmap
       kubernetes.core.k8s_info:

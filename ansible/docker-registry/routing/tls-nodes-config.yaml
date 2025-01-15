@@ -1,16 +1,10 @@
 - name: Configures nodes to be able to use TLS communication
   hosts: kubernetes_common
   tasks:
-    - name: Wait till ingress-controller obtains external IP from metallb
+    - name: Retrieve ingress IP from file
       ansible.builtin.command:
-        cmd: >
-          kubectl get service/ingress-nginx-controller
-          -n ingress-nginx
-          -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-      register: external_ip
-      until: external_ip.stdout != ""
-      retries: 10
-      delay: 6
+        cmd: cat "/shared_storage/share/nginx-ingress-ip.txt"
+      register: ingress_ip
       changed_when: false
 
     - name: Check if host entry for ingress-controller exists
@@ -26,7 +20,7 @@
       become: true
       ansible.builtin.lineinfile:
         path: /etc/hosts
-        line: "{{ ingress_ip }} docker-registry.cluster.local"
+        line: "{{ ingress_ip.stdout }} docker-registry.cluster.local"
         state: present
       when: grep_hosts.rc == 1
 
