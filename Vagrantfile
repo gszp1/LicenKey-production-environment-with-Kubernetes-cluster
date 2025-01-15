@@ -3,7 +3,7 @@ Vagrant.configure("2") do |config|
   # Define the base box
   config.vm.box = "bento/ubuntu-20.04"
   config.vm.provider "virtualbox" do |v|
-    v.memory = 3072
+    v.memory = 4096
     v.cpus = 4
   end
 

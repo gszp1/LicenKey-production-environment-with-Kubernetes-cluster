@@ -1,40 +1,68 @@
 - name: Set up Control Plane
   hosts: control_plane
-  become: yes
+  become: true
   gather_facts: true
   tasks:
     - name: Print pod network cidr
-      debug:
+      ansible.builtin.debug:
         var: pod_network_cidr
 
     - name: Check if kubeinit has been called
-      stat:
+      ansible.builtin.stat:
         path: /etc/kubernetes/kubelet.conf
       register: kubeinit_called
 
     - name: Initialize the Kubernetes cluster using kubeadm
-      command: kubeadm init --apiserver-advertise-address="{{ node_ip }}" --apiserver-cert-extra-sans="{{ node_ip }}"  --node-name {{ ansible_hostname }} --pod-network-cidr="{{ pod_network_cidr }}"
-      when: kubeinit_called.stat.exists == false
+      ansible.builtin.command:
+        cmd: >
+          kubeadm init --apiserver-advertise-address="{{ node_ip }}"
+          --apiserver-cert-extra-sans="{{ node_ip }}"
+          --node-name {{ ansible_hostname }}
+          --pod-network-cidr="{{ pod_network_cidr }}"
+        creates: /etc/kubernetes/admin.conf
+      when: not kubeinit_called.stat.exists
 
-    - name: Setup kubeconfig for user
-      command: "{{ item }}"
-      with_items:
-        - mkdir -p /home/{{ ansible_user }}/.kube
-        - cp -i /etc/kubernetes/admin.conf /home/{{ ansible_user }}/.kube/config
-        - chown {{ ansible_user }}:{{ ansible_user }} /home/{{ ansible_user }}/.kube/config
-      when: kubeinit_called.stat.exists == false
+    - name: Create .kube directory
+      ansible.builtin.file:
+        path: /home/{{ ansible_user }}/.kube
+        state: directory
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0755'
+      when: not kubeinit_called.stat.exists
+
+    - name: Copy admin.conf to user .kube config
+      ansible.builtin.copy:
+        src: /etc/kubernetes/admin.conf
+        dest: /home/{{ ansible_user }}/.kube/config
+        remote_src: true
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: '0600'
+      when: not kubeinit_called.stat.exists
 
     - name: Copy the flannel manifest to the CP node
-      copy: src=../flannel/kube-flannel.yml dest=/tmp/kube-flannel.yml mode=0777
+      ansible.builtin.copy:
+        src: ../flannel/kube-flannel.yml
+        dest: /tmp/kube-flannel.yml
+        mode: "0777"
 
     - name: Apply Flannel CNI manifest
       become: false
-      shell: kubectl apply -f /tmp/kube-flannel.yml
+      kubernetes.core.k8s:
+        state: present
+        src: /tmp/kube-flannel.yml
 
     - name: Generate join command
-      command: kubeadm token create --print-join-command
+      ansible.builtin.command:
+        cmd: kubeadm token create --print-join-command
       register: join_command
+      changed_when: false
 
     - name: Copy join command to local file
       become: false
-      local_action: copy content="{{ join_command.stdout_lines[0] }}" dest="../tmp/join-command"
+      delegate_to: localhost
+      ansible.builtin.copy:
+        content: "{{ join_command.stdout_lines[0] }}"
+        dest: "../tmp/join-command"
+        mode: "0644"

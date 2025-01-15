@@ -1,6 +1,6 @@
 - name: Set up Kubernetes worker node
   hosts: kubernetes_common
-  become: yes
+  become: true
   gather_facts: true
   tasks:
     - name: Change owner of /mnt directory to ansible user
@@ -8,26 +8,28 @@
         path: /mnt
         owner: "{{ ansible_user }}"
         state: directory
+        mode: "0755"
 
     - name: Create a directory for container registry
       ansible.builtin.file:
         path: /mnt/container-registry
         state: directory
+        mode: "0755"
 
     - name: Update apt cache
-      apt:
-        update_cache: yes
+      ansible.builtin.apt:
+        update_cache: true
         cache_valid_time: 3600
 
     - name: Install aptitude
-      apt:
+      ansible.builtin.apt:
         name: aptitude
-        state: latest
+        state: present
         update_cache: true
 
     - name: Install required system packages
-      apt:
-        pkg:
+      ansible.builtin.apt:
+        name:
           - apt-transport-https
           - ca-certificates
           - curl
@@ -39,31 +41,31 @@
           - software-properties-common
           - jq
           - gpg
-        state: latest
+        state: present
         update_cache: true
 
     - name: Add Docker GPG apt Key
-      apt_key:
+      ansible.builtin.apt_key:
         url: https://download.docker.com/linux/ubuntu/gpg
         state: present
 
     - name: Add Docker Repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb https://download.docker.com/linux/ubuntu focal stable
         state: present
 
     - name: Update apt and install docker-ce
-      apt:
-        pkg:
+      ansible.builtin.apt:
+        name:
           - containerd.io
           - docker-ce
           - docker-ce-cli
           - docker
-        state: latest
+        state: present
         update_cache: true
 
     - name: Remove swapfile from /etc/fstab
-      mount:
+      ansible.posix.mount:
         name: "{{ item }}"
         fstype: swap
         state: absent
@@ -72,33 +74,57 @@
         - none
 
     - name: Disable swap
-      command: swapoff -a
-      when: ansible_swaptotal_mb > 0
+      ansible.builtin.shell: |
+        set -o pipefail
+        # Check if any swap is currently used
+        if swapon --summary | grep -q 'file'; then
+          # Attempt to disable all swap devices
+          swapoff -a
+          # Check if the swap is successfully turned off
+          if free | grep -q 'Swap: *0 *0 *0'; then
+            exit 0  # Success, swap is disabled
+          else
+            exit 1  # Failure, swap still active
+          fi
+        else
+          exit 0  # Swap was already off, no change needed
+        fi
+      register: swap_off_result
+      changed_when: "'Swap was successfully disabled' in swap_off_result.stdout"
+      failed_when: swap_off_result.rc != 0
+      args:
+        executable: /bin/bash
 
     - name: Ensure /etc/apt/keyrings directory exists
-      file:
+      ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
         mode: '0755'
 
-    - name: Download and dearmor Kubernetes GPG key
-      shell: |
-        curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
+    - name: Download Kubernetes GPG key
+      ansible.builtin.get_url:
+        url: https://pkgs.k8s.io/core:/stable:/v1.31/deb/Release.key
+        dest: /tmp/kubernetes-Release.key
+        mode: "0644"
+
+    - name: Dearmor Kubernetes GPG key and save it to apt keyrings
+      ansible.builtin.shell: |
+        gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg /tmp/kubernetes-Release.key
       args:
         creates: /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
     - name: Add Kubernetes apt repository
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.31/deb/ /'
         filename: 'kubernetes.list'
         state: present
 
     - name: Update apt cache again
-      apt:
-        update_cache: yes
+      ansible.builtin.apt:
+        update_cache: true
 
     - name: Install Kubernetes packages
-      apt:
+      ansible.builtin.apt:
         name:
           - kubelet
           - kubeadm
@@ -106,21 +132,24 @@
         state: present
 
     - name: Configure node ip
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/default/kubelet
         line: KUBELET_EXTRA_ARGS=--node-ip={{ node_ip }}
-        create: yes
+        create: true
+        mode: "0755"
 
     - name: Generate default containerd configuration
-      shell: "containerd config default > /etc/containerd/config.toml"
+      ansible.builtin.shell:
+        cmd: "containerd config default > /etc/containerd/config.toml"
+      changed_when: false
 
     - name: Restart containerd service
-      systemd:
+      ansible.builtin.systemd:
         name: containerd
         state: restarted
 
     - name: Load br_netfilter kernel module
-      ansible.builtin.modprobe:
+      community.general.modprobe:
         name: br_netfilter
         state: present
 
@@ -133,22 +162,22 @@
         mode: '0644'
 
     - name: Set and persist sysctl parameters for Kubernetes networking
-      ansible.builtin.sysctl:
+      ansible.posix.sysctl:
         name: "{{ item.name }}"
         value: "{{ item.value }}"
         state: present
-        reload: yes
-        sysctl_set: yes
+        reload: true
+        sysctl_set: true
         sysctl_file: /etc/sysctl.d/k8s.conf
       loop:
         - { name: 'net.bridge.bridge-nf-call-ip6tables', value: '1' }
-        - { name: 'net.bridge.bridge-nf-call-iptables',  value: '1' }
+        - { name: 'net.bridge.bridge-nf-call-iptables', value: '1' }
         - { name: 'net.bridge.bridge-nf-call-arptables', value: '1' }
 
     - name: Enable and start kubelet service
-      systemd:
+      ansible.builtin.systemd:
         name: kubelet
-        enabled: yes
+        enabled: true
         state: restarted
 
     - name: Install kubernetes ansible package
