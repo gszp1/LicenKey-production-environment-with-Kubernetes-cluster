@@ -2,15 +2,14 @@
   hosts: control_plane
   tasks:
     - name: Retrieve CA certificate
-      ansible.builtin.command:
-        cmd: >
-          kubectl get secret/mat-grz-ca-secret
-          -n docker-registry-ns
-          -o jsonpath='{.data.ca\.crt}'
+      kubernetes.core.k8s_info:
+        kind: Secret
+        name: mat-grz-ca-secret
+        namespace: docker-registry-ns
       register: encoded_cert
 
     - name: Decode cert and save it to file
       ansible.builtin.copy:
-        content: "{{ encoded_cert.stdout | b64decode }}"
+        content: "{{ encoded_cert.resources[0].data['ca.crt'] | b64decode }}"
         dest: /shared_storage/share/ca.crt
         mode: '0644'

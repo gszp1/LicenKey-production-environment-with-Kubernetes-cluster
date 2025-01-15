@@ -7,34 +7,42 @@
           kubectl get service/ingress-nginx-controller
           -n ingress-nginx
           -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-      register: check_external_ip
-      until: check_external_ip.stdout != ""
+      register: external_ip
+      until: external_ip.stdout != ""
       retries: 10
       delay: 6
       changed_when: false
 
-    - name: Retrieve ingress-controller external IP
+    - name: Check if host entry for ingress-controller exists
+      become: true
       ansible.builtin.command:
-        cmd: >
-          kubectl get service/ingress-nginx-controller
-          -n ingress-nginx
-          -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-      register: external_ip
+        cmd: grep "docker-registry.cluster.local" /etc/hosts
+      register: grep_hosts
+      failed_when: grep_hosts.rc not in [0, 1]
       changed_when: false
-      failed_when: external_ip.stdout == ""
+      ignore_errors: true
 
     - name: Create host entry for ingress-controller
       become: true
-      ansible.builtin.command:
-        cmd: >
-          echo "{{ external_ip.stdout }} docker-registry.cluster.local" >> /etc/hosts
+      ansible.builtin.lineinfile:
+        path: /etc/hosts
+        line: "{{ ingress_ip }} docker-registry.cluster.local"
+        state: present
+      when: grep_hosts.rc == 1
 
     - name: Copy CA certificate
       become: true
-      ansible.builtin.command:
-        cmd: cp /shared_storage/share/ca.crt /usr/local/share/ca-certificates/ca.crt
+      ansible.builtin.copy:
+        src: /shared_storage/share/ca.crt
+        dest: /usr/local/share/ca-certificates/ca.crt
+        remote_src: true
+        owner: root
+        group: root
+        mode: "0644"
 
     - name: Reload ca-certificates
       become: true
       ansible.builtin.command:
         cmd: update-ca-certificates
+      register: output
+      changed_when: output.stdout != ""
