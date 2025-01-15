@@ -1,4 +1,18 @@
-# Meaning of the files residing in this directory
+# How to run:
+## 1. Default setup
+Run ./init.sh script - it will create vagrant machines and run all playbooks responsible for cluster setup.
+
+Run ./destroy.sh to destroy cluster together with virtual machines.
+## 2. Snapshot setup
+This approach sets up whole cluster in the same manner as default setup (./init.sh), but before playbooks are run,
+snapshot is being created. This makes vagrant machines setup faster when cluster is re-created.
+
+Run ./create_snapshot.sh - creates vagrant machines, makes snapshot and runs playbooks.
+
+Run ./from_snapshot.sh - re-creates cluster from snapshot and runs playbooks.
+(DO NOT REMOVE CLUSTER USING ./destroy.sh- SNAPSHOTS REQUIRE THESE MACHINES TO BE RUNNING)
+
+Run ./destroy.sh - destroys cluster
 
 # Before the cluster is being setup, following commands have to be run:
 - `sudo mkdir -p /home/nfs`
