@@ -1,88 +1,96 @@
 - name: Adds nginx ingress-controller
   hosts: control_plane
   tasks:
-  - name: Add helm repository for ingress-nginx
-    ansible.builtin.command:
-      cmd: helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+    - name: Add Ingress-Nginx Helm repository
+      kubernetes.core.helm_repository:
+        repo_name: ingress-nginx
+        repo_url: https://kubernetes.github.io/ingress-nginx
+        state: present
 
-  - name: Update helm repositories
-    ansible.builtin.command:
-      cmd: helm repo update
+    - name: Update Helm repositories
+      ansible.builtin.command:
+        cmd: helm repo update
+      changed_when: false
 
-  - name: Install ingress-nginx
-    ansible.builtin.command:
-      cmd: >
-        helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx
-        --namespace ingress-nginx --create-namespace
-        --set controller.service.type=LoadBalancer
-        --set controller.admissionWebhooks.enabled=true
+    - name: Install Ingress-Nginx through Helm chart
+      kubernetes.core.helm:
+        chart_ref: ingress-nginx/ingress-nginx
+        name: ingress-nginx
+        release_namespace: ingress-nginx
+        create_namespace: true
+        values:
+          controller.service.type: LoadBalancer
+          controller.admissionWebhooks.enabled: true
 
-  - name: Wait till ingress-controller obtains external IP from metallb
-    ansible.builtin.command:
-      cmd: >
-        kubectl get service/ingress-nginx-controller
-        -n ingress-nginx
-        -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-    register: check_external_ip
-    until: check_external_ip.stdout != ""
-    retries: 10
-    delay: 6
-    changed_when: false
+    - name: Wait till ingress-controller obtains external IP from metallb
+      ansible.builtin.command:
+        cmd: >
+          kubectl get service/ingress-nginx-controller
+          -n ingress-nginx
+          -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+      register: check_external_ip
+      until: check_external_ip.stdout != ""
+      retries: 10
+      delay: 6
+      changed_when: false
 
-  - name: Retrieve ingress-controller external IP
-    ansible.builtin.command:
-      cmd: >
-        kubectl get service/ingress-nginx-controller
-        -n ingress-nginx
-        -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
-    register: external_ip
-    changed_when: false
-    failed_when: external_ip.stdout == ""
+    - name: Retrieve ingress-controller external IP
+      ansible.builtin.command:
+        cmd: >
+          kubectl get service/ingress-nginx-controller
+          -n ingress-nginx
+          -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+      register: external_ip
+      changed_when: false
+      failed_when: external_ip.stdout == ""
 
-  - name: Print retrieved IP
-    ansible.builtin.debug:
-      msg: "{{ external_ip.stdout }}"
+    - name: Print retrieved IP
+      ansible.builtin.debug:
+        msg: "{{ external_ip.stdout }}"
 
 
-  - name: Get coredns configmap
-    kubernetes.core.k8s_info:
-      api_version: v1
-      kind: ConfigMap
-      name: coredns
-      namespace: kube-system
-    register: coredns_config_map
-
-  - name: Save config map to file
-    ansible.builtin.copy:
-      content: "{{ coredns_config_map.resources[0].data.Corefile }}"
-      dest: /shared_storage/share/Corefile
-      mode: "0644"
-
-  - name: Update config map values
-    ansible.builtin.blockinfile:
-      path: /shared_storage/share/Corefile
-      insertbefore: '^}$'
-      marker: "# {mark} ANSIBLE MANAGED HOSTS BLOCK"
-      block: |
-        hosts {
-          {{ external_ip.stdout }} docker-registry.cluster.local
-          fallthrough
-        }
-
-  - name: Update CoreDNS Configmap
-    kubernetes.core.k8s:
-      state: present
-      definition:
-        apiVersion: v1
+    - name: Get coredns configmap
+      kubernetes.core.k8s_info:
+        api_version: v1
         kind: ConfigMap
-        metadata:
-          name: coredns
-          namespace: kube-system
-        data:
-          Corefile: "{{ lookup('file', '../../data/share/Corefile') }}"
-    register: coredns_update_result
+        name: coredns
+        namespace: kube-system
+      register: coredns_config_map
 
-  - name: Restart CoreDNS
-    ansible.builtin.command:
-      cmd: kubectl rollout restart deployment/coredns -n kube-system
-    when: coredns_update_result.changed
+    - name: Save config map to file
+      ansible.builtin.copy:
+        content: "{{ coredns_config_map.resources[0].data.Corefile }}"
+        dest: /shared_storage/share/Corefile
+        mode: "0644"
+
+    - name: Update config map values
+      ansible.builtin.blockinfile:
+        path: /shared_storage/share/Corefile
+        insertbefore: '^}$'
+        marker: "# {mark} ANSIBLE MANAGED HOSTS BLOCK"
+        block: |
+          hosts {
+            {{ external_ip.stdout }} docker-registry.cluster.local
+            fallthrough
+          }
+
+    - name: Update CoreDNS Configmap
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: ConfigMap
+          metadata:
+            name: coredns
+            namespace: kube-system
+          data:
+            Corefile: "{{ lookup('file', '../../data/share/Corefile') }}"
+      register: coredns_update_result
+      notify: Restart CoreDNS
+
+  handlers:
+    - name: Restart CoreDNS
+      ansible.builtin.command:
+        cmd: kubectl rollout restart deployment/coredns -n kube-system
+      listen: Restart CoreDNS
+      changed_when: false
