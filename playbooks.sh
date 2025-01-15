@@ -36,11 +36,11 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/certific
 # Adds file with CA certificate from certificate to shared space
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/share-certificate.yaml
 
-# Adds TLS certificate for nodes for secured HTTPS connections via ingress to docker registry
-ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/tls-nodes-config.yaml
+# Creates secret with htpasswd file 
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/registry-authentication.yaml
 
 # Adds Ingress redirecting to Docker Registry. Provides encryption and authentication
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/routing-ingress.yaml
 
-# Creates secret with htpasswd file 
-ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/registry-authentication.yaml
+# Configure nodes to be able to connect with registry ingress
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/node-traffic-config.yaml

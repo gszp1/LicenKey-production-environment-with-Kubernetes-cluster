@@ -4,6 +4,7 @@
   vars:
     user: docker-user
     password: docker-password
+    docker_server: docker-registry.cluster.local
   tasks:
     - name: Ensure that apache2-utils are installed
       become: true
@@ -29,6 +30,52 @@
         dest: "/shared_storage/share/htpasswd"
         mode: "0644"
 
+    - name: Save registry user to file
+      become: true
+      ansible.builtin.copy:
+        content: "{{ user }}"
+        dest: "/shared_storage/share/user"
+        mode: "0644"
+
+    - name: Save registry password in file
+      become: true
+      ansible.builtin.copy:
+        content: "{{ password }}"
+        dest: "/shared_storage/share/password"
+        mode: "0644"
+
+    - name: Create docker registry credentials structure
+      ansible.builtin.set_fact:
+        docker_credentials_json: >
+          {
+            "auths": {
+              "{{ docker_server }}": {
+                "username": "{{ user }}",
+                "password": "{{ password }}",
+                "auth": "{{ (user ~ ':' ~ password) | b64encode }}"
+              }
+            }
+          }
+
+    - name: Save docker registry structure to file
+      ansible.builtin.copy:
+        content: "{{ docker_credentials_json }}"
+        dest: "/shared_storage/share/docker-credentials-json"
+        mode: "0644"
+
+    - name: Create secret with docker credentials used in manifests (pod authentication approach)
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: docker-registry-credentials
+            namespace: docker-registry-ns
+          type: kubernetes.io/dockerconfigjson
+          data:
+            .dockerconfigjson: "{{ docker_credentials_json | to_json | b64encode }}"
+
     - name: Create secret with htpasswd file
       kubernetes.core.k8s:
         state: present
@@ -40,4 +87,4 @@
             namespace: docker-registry-ns
           type: Opaque
           data:
-            auth: "{{ htpasswd_output.stdout | b64encode}}"
+            auth: "{{ htpasswd_output.stdout | b64encode }}"
