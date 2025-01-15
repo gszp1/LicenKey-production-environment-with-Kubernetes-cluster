@@ -17,14 +17,30 @@ spec:
       - name: docker-registry-volume
         persistentVolumeClaim:
           claimName: docker-registry-pvc
+      - name: registry-credentials
+        secret:
+          secretName: registry-auth
+          items:
+            - key: htpasswd
+              path: htpasswd
       containers:
       - name: registry
         image: registry:2.8.3
+        env:
+          - name: REGISTRY_AUTH
+            value: "htpasswd"
+          - name: REGISTRY_AUTH_HTPASSWD_PATH
+            value: "/auth/htpasswd"
+          - name: REGISTRY_AUTH_HTPASSWD_REALM
+            value: "Registry Authentication Required"
         ports:
         - containerPort: 5000
         volumeMounts:
           - mountPath: /var/lib/registry
             name: docker-registry-volume
+          - mountPath: /auth
+            name: registry-credentials
+            readOnly: true
 
 ---
 apiVersion: v1

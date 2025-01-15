@@ -2,11 +2,6 @@
   hosts: control_plane
   gather_facts: true
   tasks:
-    - name: Create docker-registry namespace
-      kubernetes.core.k8s:
-        state: present
-        src: /shared_storage/manifests/docker-registry/docker-registry-ns.yaml
-
     - name: Create docker-registry persistentVolume and PV Claim
       kubernetes.core.k8s:
         state: present

@@ -1,0 +1,23 @@
+- name: Makes all nodes login to docker registry
+  hosts: kubernetes_common
+  tasks:
+    - name: Load docker registry user name from file
+      ansible.builtin.command:
+        cmd: cat /shared_storage/share/user
+      register: user_name
+      changed_when: false
+
+    - name: Load docker registry password from file
+      ansible.builtin.command:
+        cmd: cat /shared_storage/share/password
+      register: user_password
+      changed_when: false
+
+    - name: Login to docker registry
+      become: true
+      ansible.builtin.command:
+        cmd: >
+          docker login docker-registry.cluster.local
+          --username "{{ user_name.stdout }}"
+          --password "{{ user_password.stdout }}"
+      changed_when: false

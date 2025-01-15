@@ -15,6 +15,9 @@ ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/nfs.yaml
 # Sets up NFS Container Storage Interface driver
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/csi.yaml
 
+# Creates secret with htpasswd file, saves credentials, htpasswd content, auth structure to files
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/htpasswd.yaml
+
 # Sets up Helm on master node
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/helm.yaml
 
@@ -27,8 +30,8 @@ ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/metallb.yaml
 # Adds NGINX ingress controller via Helm chart
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/nginx-ingress.yaml
 
-# Creates Persistent Volume, Persistent Volume Claim and Docker Registry exposed via NodePort
-ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/setup/docker-registry.yaml
+# Creates secret with credentials to docker registry for pods
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/auth-secrets.yaml
 
 # Creates Certificates and Issuers for encrypted communication with Docker Registry
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/certificates.yaml
@@ -36,11 +39,15 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/certific
 # Adds file with CA certificate from certificate to shared space
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/share-certificate.yaml
 
-# Creates secret with htpasswd file 
-ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/registry-authentication.yaml
+# Configure nodes to be able to connect with registry ingress
+# Configure nodes to login into docker registry
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/nodes-tls-config.yaml
 
-# Adds Ingress redirecting to Docker Registry. Provides encryption and authentication
+# Creates Persistent Volume, Persistent Volume Claim and Docker Registry exposed via NodePort
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/setup/docker-registry.yaml
+
+# Adds Ingress redirecting to Docker Registry. Provides secure connection via HTTP + TLS
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/routing-ingress.yaml
 
-# Configure nodes to be able to connect with registry ingress
-ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/node-traffic-config.yaml
+# Make all nodes login to docker registry
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/docker_login.yaml

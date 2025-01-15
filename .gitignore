@@ -5,3 +5,6 @@ ansible/tmp
 /data/share/ca.crt
 /data/share/htpasswd
 /data/share/nginx-ingress-ip.txt
+/data/share/password
+/data/share/user
+/data/share/docker-credentials.json

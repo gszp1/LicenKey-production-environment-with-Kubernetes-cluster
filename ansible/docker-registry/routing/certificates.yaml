@@ -1,4 +1,4 @@
-- name: Creates routing objects and dependant objects
+- name: Generates docker-registry-ns certificates
   hosts: control_plane
   tasks:
     - name: Create CA certificate
