@@ -2,5 +2,6 @@
   hosts: control_plane
   tasks:
     - name: Create ingress rule for registry
-      ansible.builtin.command:
-        cmd: kubectl apply -f /shared_storage/manifests/registry-routing/routing-ingress.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/registry-routing/routing-ingress.yaml

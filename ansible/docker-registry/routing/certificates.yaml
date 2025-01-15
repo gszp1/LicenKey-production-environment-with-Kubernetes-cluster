@@ -2,9 +2,11 @@
   hosts: control_plane
   tasks:
     - name: Create CA certificate
-      ansible.builtin.command:
-        cmd: kubectl apply -f /shared_storage/manifests/registry-routing/ca-certificate.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/registry-routing/ca-certificate.yaml
 
     - name: Create registry certificate
-      ansible.builtin.command:
-        cmd: kubectl apply -f /shared_storage/manifests/registry-routing/registry-certificate.yaml
+      kubernetes.core.k8s:
+        state: present
+        src: /shared_storage/manifests/registry-routing/registry-certificate.yaml
