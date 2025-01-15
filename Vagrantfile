@@ -2,9 +2,11 @@
 Vagrant.configure("2") do |config|
   # Define the base box
   config.vm.box = "bento/ubuntu-20.04"
+  # config.vm.disk :disk, primary: true, size: "30GB"
+  # disk setting stays here, but bento/ubuntu seems to allocate 62GB and no less. KNative requires at least 20GB
   config.vm.provider "virtualbox" do |v|
-    v.memory = 4096
-    v.cpus = 4
+    v.memory = 4096 # 4GB of RAM memory per machine
+    v.cpus = 4 # 4 CPU threads per machine
   end
 
   # Create the three connected machines, each with one private network interface
