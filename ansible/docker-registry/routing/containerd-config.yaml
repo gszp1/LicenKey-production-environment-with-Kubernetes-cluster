@@ -1,0 +1,54 @@
+- name: Configure containerd for TLS communication with local docker registry
+  hosts: kubernetes_common
+  vars:
+    certificate_dir: "/etc/tls/containerd/certs"
+  become: true
+  tasks:
+    - name: Load docker registry user name from file
+      ansible.builtin.command:
+        cmd: cat /shared_storage/share/user
+      register: user_name
+      changed_when: false
+
+    - name: Load docker registry password from file
+      ansible.builtin.command:
+        cmd: cat /shared_storage/share/password
+      register: user_password
+      changed_when: false
+
+    - name: Create directory for storing containerd certificates
+      ansible.builtin.file:
+        path: "{{ certificate_dir }}"
+        state: directory
+        mode: "755"
+
+    - name: Copy certifcate to containerd certificate storage
+      ansible.builtin.copy:
+        src: /shared_storage/share/ca.crt
+        dest: "{{ certificate_dir }}"
+        remote_src: true
+        mode: '0644'
+
+    - name: Update containerd mirrors
+      ansible.builtin.blockinfile:
+        path: /etc/containerd/config.toml
+        insertafter: '[plugins."io.containerd.grpc.v1.cri".registry.mirrors]'
+        block: |
+          [plugins."io.containerd.grpc.v1.cri".registry.mirrors."docker-registry.cluster.local"]
+            endpoint = ["https://docker-registry.cluster.local"]
+
+    - name: Update containerd configs
+      ansible.builtin.blockinfile:
+        path: /etc/containerd/config.toml
+        insertafter: '[plugins."io.containerd.grpc.v1.cri".registry.configs]'
+        block: |
+          [plugins."io.containerd.grpc.v1.cri".registry.configs."docker-registry.cluster.local".auth]
+            username = "{{ user_name.stdout }}"
+            password = "{{ user_password.stdout }}"
+          [plugins."io.containerd.grpc.v1.cri".registry.configs."docker-registry.cluster.local".tls]
+            ca_file = "{{ certificate_dir }}/ca.crt"
+
+    - name: Restart containerd
+      ansible.builtin.service:
+        name: containerd
+        state: restarted

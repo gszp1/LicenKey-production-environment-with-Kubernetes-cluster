@@ -5,6 +5,7 @@ metadata:
   namespace: docker-registry-ns
   annotations:
     cert-manager.io/issuer: mat-grz-issuer
+    nginx.ingress.kubernetes.io/proxy-body-size: "4096m"
 spec:
   ingressClassName: nginx
   tls:

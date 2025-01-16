@@ -22,6 +22,10 @@
           --password "{{ user_password.stdout }}"
       register: login_result
       until: login_result.rc == 0
-      retries: 5
-      delay: 10
+      retries: 10
+      delay: 12
       changed_when: false
+
+    - name: Print login result
+      ansible.builtin.debug:
+        msg: "{{ login_result.stdout }}"

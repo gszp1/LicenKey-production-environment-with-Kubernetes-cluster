@@ -12,11 +12,11 @@ ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/worker.yaml
 # Adds NFS tools for worker nodes
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/nfs.yaml
 
-# Sets up NFS Container Storage Interface driver
-ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/csi.yaml
-
 # Creates secret with htpasswd file, saves credentials, htpasswd content, auth structure to files
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/htpasswd.yaml
+
+# Sets up NFS Container Storage Interface driver
+ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/csi.yaml
 
 # Sets up Helm on master node
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/helm.yaml
@@ -43,6 +43,9 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/share-ce
 # Configure nodes to login into docker registry
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/nodes-tls-config.yaml
 
+# Configure containerd for docker regitry authentication
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/containerd-config.yaml
+
 # Creates Persistent Volume, Persistent Volume Claim and Docker Registry exposed via NodePort
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/setup/docker-registry.yaml
 
@@ -50,4 +53,4 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/setup/docker-reg
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/routing-ingress.yaml
 
 # Make all nodes login to docker registry
-ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/docker_login.yaml
+ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/docker-login.yaml
