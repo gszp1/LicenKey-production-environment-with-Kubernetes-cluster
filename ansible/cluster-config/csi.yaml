@@ -10,6 +10,6 @@
     - name: Install CSI driver
       ansible.builtin.command:
         cmd: ./deploy/install-driver.sh v4.9.0 local
-        chdir: /shared_storage/csi-driver-nfs
+        chdir: /shared_storage/drivers_CRD/csi-driver-nfs
       args:
         creates: /var/lib/kubelet/plugins/kubernetes.io/nfs-csi
