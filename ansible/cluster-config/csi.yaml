@@ -4,7 +4,7 @@
   tasks:
     - name: Ensure installation script for driver is mounted
       ansible.builtin.file:
-        path: /shared_storage/csi-driver-nfs/deploy/install-driver.sh
+        path: /shared_storage/drivers_CRD/csi-driver-nfs/deploy/install-driver.sh
         state: file
         mode: '0755'
     - name: Install CSI driver
