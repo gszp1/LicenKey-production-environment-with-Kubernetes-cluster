@@ -1,5 +1,24 @@
 # CHANGELOG
 
+## 0.45.0
+
+* Add support for Kafka 3.9.0 and 3.8.1. 
+  Remove support for Kafka 3.7.0 and 3.7.1
+* Ability to move data between JBOD disks using Cruise Control.
+* Allow using custom certificates for communication with container registry in Kafka Connect Build with Kaniko 
+* Only roll pods once for ClientsCa cert renewal.
+  This change also means the restart reason ClientCaCertKeyReplaced is removed and either CaCertRenewed or CaCertHasOldGeneration will be used.
+* Allow rolling update for new cluster CA trust (during Cluster CA key replacement) to continue where it left off before interruption without rolling all pods again.
+* Update HTTP bridge to 0.31.1
+* Add support for mounting CSI volumes using the `template` sections
+
+### Major changes, deprecations and removals
+
+* **Strimzi 0.45 is the last minor Strimzi version with support for ZooKeeper-based Apache Kafka clusters and MirrorMaker 1 deployments.**
+  **Please make sure to [migrate to KRaft](https://strimzi.io/docs/operators/latest/full/deploying.html#assembly-kraft-mode-str) and MirrorMaker 2 before upgrading to Strimzi 0.46 or newer.**
+* **Strimzi 0.45 is the last Strimzi version to include the [Strimzi EnvVar Configuration Provider](https://github.com/strimzi/kafka-env-var-config-provider) (deprecated in Strimzi 0.38.0) and [Strimzi MirrorMaker 2 Extensions](https://github.com/strimzi/mirror-maker-2-extensions) (deprecated in Strimzi 0.28.0).**
+  Please use the Apache Kafka [EnvVarConfigProvider](https://github.com/strimzi/kafka-env-var-config-provider?tab=readme-ov-file#deprecation-notice) and [Identity Replication Policy](https://github.com/strimzi/mirror-maker-2-extensions?tab=readme-ov-file#identity-replication-policy) instead. 
+
 ## 0.44.0
 
 * Add the "Unmanaged" KafkaTopic status update.

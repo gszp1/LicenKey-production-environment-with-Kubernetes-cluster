@@ -826,18 +826,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#type-KafkaMirrorMaker2Status-reference">154. <code>KafkaMirrorMaker2Status</code> schema reference</a></li>
 <li><a href="#type-KafkaRebalance-reference">155. <code>KafkaRebalance</code> schema reference</a></li>
 <li><a href="#type-KafkaRebalanceSpec-reference">156. <code>KafkaRebalanceSpec</code> schema reference</a></li>
-<li><a href="#type-KafkaRebalanceStatus-reference">157. <code>KafkaRebalanceStatus</code> schema reference</a></li>
-<li><a href="#type-KafkaNodePool-reference">158. <code>KafkaNodePool</code> schema reference</a></li>
-<li><a href="#type-KafkaNodePoolSpec-reference">159. <code>KafkaNodePoolSpec</code> schema reference</a></li>
-<li><a href="#type-KafkaNodePoolTemplate-reference">160. <code>KafkaNodePoolTemplate</code> schema reference</a></li>
-<li><a href="#type-KafkaNodePoolStatus-reference">161. <code>KafkaNodePoolStatus</code> schema reference</a></li>
-<li><a href="#type-StrimziPodSet-reference">162. <code>StrimziPodSet</code> schema reference</a>
+<li><a href="#type-BrokerAndVolumeIds-reference">157. <code>BrokerAndVolumeIds</code> schema reference</a></li>
+<li><a href="#type-KafkaRebalanceStatus-reference">158. <code>KafkaRebalanceStatus</code> schema reference</a></li>
+<li><a href="#type-KafkaNodePool-reference">159. <code>KafkaNodePool</code> schema reference</a></li>
+<li><a href="#type-KafkaNodePoolSpec-reference">160. <code>KafkaNodePoolSpec</code> schema reference</a></li>
+<li><a href="#type-KafkaNodePoolTemplate-reference">161. <code>KafkaNodePoolTemplate</code> schema reference</a></li>
+<li><a href="#type-KafkaNodePoolStatus-reference">162. <code>KafkaNodePoolStatus</code> schema reference</a></li>
+<li><a href="#type-StrimziPodSet-reference">163. <code>StrimziPodSet</code> schema reference</a>
 <ul class="sectlevel2">
-<li><a href="#type-StrimziPodSet-schema-reference">162.1. <code>StrimziPodSet</code> schema properties</a></li>
+<li><a href="#type-StrimziPodSet-schema-reference">163.1. <code>StrimziPodSet</code> schema properties</a></li>
 </ul>
 </li>
-<li><a href="#type-StrimziPodSetSpec-reference">163. <code>StrimziPodSetSpec</code> schema reference</a></li>
-<li><a href="#type-StrimziPodSetStatus-reference">164. <code>StrimziPodSetStatus</code> schema reference</a></li>
+<li><a href="#type-StrimziPodSetSpec-reference">164. <code>StrimziPodSetSpec</code> schema reference</a></li>
+<li><a href="#type-StrimziPodSetStatus-reference">165. <code>StrimziPodSetStatus</code> schema reference</a></li>
 </ul>
 </div>
 </div>
@@ -1472,32 +1473,32 @@ If an <code>image</code> name is not defined in the Cluster Operator configurati
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Topic Operator</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRIMZI_DEFAULT_TOPIC_OPERATOR_IMAGE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/operator:0.44.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/operator:0.45.0</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">User Operator</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRIMZI_DEFAULT_USER_OPERATOR_IMAGE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/operator:0.44.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/operator:0.45.0</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kafka Exporter</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRIMZI_DEFAULT_KAFKA_EXPORTER_IMAGE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/kafka:0.44.0-kafka-3.8.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/kafka:0.45.0-kafka-3.9.0</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Cruise Control</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRIMZI_DEFAULT_CRUISE_CONTROL_IMAGE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/kafka:0.44.0-kafka-3.8.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/kafka:0.45.0-kafka-3.9.0</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kafka Bridge</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRIMZI_DEFAULT_KAFKA_BRIDGE_IMAGE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/kafka-bridge:0.30.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/kafka-bridge:0.31.1</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Kafka initializer</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>STRIMZI_DEFAULT_KAFKA_INIT_IMAGE</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/operator:0.44.0</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>quay.io/strimzi/operator:0.45.0</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -1979,6 +1980,9 @@ jvmOptions:
 <li>
 <p>PersistentVolumeClaims</p>
 </li>
+<li>
+<p>CSI Volumes</p>
+</li>
 </ul>
 </div>
 <div class="listingblock">
@@ -2002,6 +2006,13 @@ spec:
           - name: example-pvc-volume
             persistentVolumeClaim:
               claimName: myclaim
+          - name: example-csi-volume
+            csi:
+              driver: csi.cert-manager.io
+              readOnly: true
+              volumeAttributes:
+                csi.cert-manager.io/issuer-name: my-ca
+                csi.cert-manager.io/dns-names: ${POD_NAME}.${POD_NAMESPACE}.svc.cluster.local
       kafkaContainer:
         volumeMounts:
           - name: example-secret
@@ -2011,7 +2022,9 @@ spec:
           - name: temp
             mountPath: /mnt/temp
           - name: example-pvc-volume
-            mountPath: /mnt/data</code></pre>
+            mountPath: /mnt/data
+          - name: example-csi-volume
+            mountPath: /mnt/certificate</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2168,8 +2181,8 @@ metadata:
   name: my-cluster
 spec:
   kafka:
-    version: 3.8.0
-    metadataVersion: 3.8
+    version: 3.9.0
+    metadataVersion: 3.9
     # ...
     config:
       auto.create.topics.enable: "false"
@@ -2373,7 +2386,7 @@ If the <code>brokerRackInitImage</code> field is not provided, the images used a
 <p>Container image specified in <code>STRIMZI_DEFAULT_KAFKA_INIT_IMAGE</code> environment variable in the Cluster Operator configuration.</p>
 </li>
 <li>
-<p><code>quay.io/strimzi/operator:0.44.0</code> container image.</p>
+<p><code>quay.io/strimzi/operator:0.45.0</code> container image.</p>
 </li>
 </ol>
 </div>
@@ -4044,7 +4057,7 @@ listeners:
 </div>
 </div>
 <div class="paragraph">
-<p>Instead of specifying the <code>host</code> property for every broker, you can also use an <code>hostTemplate</code> to generate them automatically.
+<p>Instead of specifying the <code>host</code> property for every broker, you can also use a <code>hostTemplate</code> to generate them automatically.
 The <code>hostTemplate</code> supports the following variables:</p>
 </div>
 <div class="ulist">
@@ -4397,6 +4410,15 @@ listeners:
 <td class="tableblock halign-left valign-top"><p class="tableblock">string</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Configures the template for generating the advertised hostnames of the individual brokers. Valid placeholders that you can use in the template are <code>{nodeId}</code> and <code>{nodePodName}</code>.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">allocateLoadBalancerNodePorts</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">boolean</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>Configures whether to allocate NodePort automatically for the <code>Service</code> with type <code>LoadBalancer</code>.
+This is a one to one with the <code>spec.allocateLoadBalancerNodePorts</code> configuration in the <code>Service</code> type
+For <code>loadbalancer</code> listeners only.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -5400,7 +5422,7 @@ Before modifying the <code>pom.xml</code> file, the third-party library must be 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight"><code class="language-none hljs">FROM quay.io/strimzi/kafka:0.44.0-kafka-3.8.0
+<pre class="highlightjs highlight"><code class="language-none hljs">FROM quay.io/strimzi/kafka:0.45.0-kafka-3.9.0
 USER root:root
 COPY ./<em>my-authorizer</em>/ /opt/kafka/libs/
 USER 1001</code></pre>
@@ -6621,6 +6643,13 @@ This configuration is especially useful for Kafka Connect or MirrorMaker when a 
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#persistentvolumeclaimvolumesource-v1-core">PersistentVolumeClaimVolumeSource</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>PersistentVolumeClaim object to use to populate the volume.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">csi</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.25/#csivolumesource-v1-core">CSIVolumeSource</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>CSIVolumeSource object to use to populate the volume.</p>
 </div></div></td>
 </tr>
 </tbody>
@@ -8796,7 +8825,7 @@ spec:
   cruiseControl:
     # ...
     apiUsers:
-      type: hashloginservice
+      type: hashLoginService
       valueFrom:
         secretKeyRef:
           name: cruise-control-api-users-secret
@@ -12635,7 +12664,7 @@ It must have the value <code>docker</code> for the type <code>DockerOutput</code
 <td class="tableblock halign-left valign-top"><p class="tableblock">additionalKanikoOptions</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">string array</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>Configures additional options which will be passed to the Kaniko executor when building the new Connect image. Allowed options are: --customPlatform, --insecure, --insecure-pull, --insecure-registry, --log-format, --log-timestamp, --registry-mirror, --reproducible, --single-snapshot, --skip-tls-verify, --skip-tls-verify-pull, --skip-tls-verify-registry, --verbosity, --snapshotMode, --use-new-run. These options will be used only on Kubernetes where the Kaniko executor is used. They will be ignored on OpenShift. The options are described in the <a href="https://github.com/GoogleContainerTools/kaniko" target="_blank" rel="noopener">Kaniko GitHub repository</a>. Changing this field does not trigger new build of the Kafka Connect image.</p>
+<p>Configures additional options which will be passed to the Kaniko executor when building the new Connect image. Allowed options are: --customPlatform, --custom-platform, --insecure, --insecure-pull, --insecure-registry, --log-format, --log-timestamp, --registry-mirror, --reproducible, --single-snapshot, --skip-tls-verify, --skip-tls-verify-pull, --skip-tls-verify-registry, --verbosity, --snapshotMode, --use-new-run, --registry-certificate, --registry-client-cert. These options will be used only on Kubernetes where the Kaniko executor is used. They will be ignored on OpenShift. The options are described in the <a href="https://github.com/GoogleContainerTools/kaniko" target="_blank" rel="noopener">Kaniko GitHub repository</a>. Changing this field does not trigger new build of the Kafka Connect image.</p>
 </div></div></td>
 </tr>
 <tr>
@@ -16845,7 +16874,7 @@ You can also <a href="#con-common-configuration-ssl-reference">configure the <co
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">mode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">string (one of [remove-brokers, full, add-brokers])</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">string (one of [remove-disks, remove-brokers, full, add-brokers])</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p>Mode to run the rebalancing. The supported modes are <code>full</code>, <code>add-brokers</code>, <code>remove-brokers</code>.
 If not specified, the <code>full</code> mode is used by default.</p>
@@ -16860,6 +16889,10 @@ If not specified, the <code>full</code> mode is used by default.</p>
 </li>
 <li>
 <p><code>remove-brokers</code> mode can be used before scaling down the cluster to move replicas out of the brokers to be removed.</p>
+</li>
+<li>
+<p><code>remove-disks</code> mode can be used to move data across the volumes within the same broker
+.</p>
 </li>
 </ul>
 </div></div></td>
@@ -16934,12 +16967,57 @@ If not specified, the <code>full</code> mode is used by default.</p>
 <p>A list of strategy class names used to determine the execution order for the replica movements in the generated optimization proposal. By default BaseReplicaMovementStrategy is used, which will execute the replica movements in the order that they were generated.</p>
 </div></div></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">moveReplicasOffVolumes</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="#type-BrokerAndVolumeIds-reference"><code>BrokerAndVolumeIds</code></a> array</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>List of brokers and their corresponding volumes from which replicas need to be moved.</p>
+</div></div></td>
+</tr>
 </tbody>
 </table>
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-KafkaRebalanceStatus-reference">157. <code>KafkaRebalanceStatus</code> schema reference</h2>
+<h2 id="type-BrokerAndVolumeIds-reference">157. <code>BrokerAndVolumeIds</code> schema reference</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Used in: <a href="#type-KafkaRebalanceSpec-reference"><code>KafkaRebalanceSpec</code></a></p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 28.5714%;">
+<col style="width: 28.5714%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Property</th>
+<th class="tableblock halign-left valign-top">Property type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">brokerId</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>ID of the broker that contains the disk from which you want to move the partition replicas.</p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">volumeIds</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">integer array</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>IDs of the disks from which the partition replicas need to be moved.</p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect1">
+<h2 id="type-KafkaRebalanceStatus-reference">158. <code>KafkaRebalanceStatus</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Used in: <a href="#type-KafkaRebalance-reference"><code>KafkaRebalance</code></a></p>
@@ -16991,7 +17069,7 @@ If not specified, the <code>full</code> mode is used by default.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-KafkaNodePool-reference">158. <code>KafkaNodePool</code> schema reference</h2>
+<h2 id="type-KafkaNodePool-reference">159. <code>KafkaNodePool</code> schema reference</h2>
 <div class="sectionbody">
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -17026,7 +17104,7 @@ If not specified, the <code>full</code> mode is used by default.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-KafkaNodePoolSpec-reference">159. <code>KafkaNodePoolSpec</code> schema reference</h2>
+<h2 id="type-KafkaNodePoolSpec-reference">160. <code>KafkaNodePoolSpec</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Used in: <a href="#type-KafkaNodePool-reference"><code>KafkaNodePool</code></a></p>
@@ -17092,7 +17170,7 @@ If not specified, the <code>full</code> mode is used by default.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-KafkaNodePoolTemplate-reference">160. <code>KafkaNodePoolTemplate</code> schema reference</h2>
+<h2 id="type-KafkaNodePoolTemplate-reference">161. <code>KafkaNodePoolTemplate</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Used in: <a href="#type-KafkaNodePoolSpec-reference"><code>KafkaNodePoolSpec</code></a></p>
@@ -17172,7 +17250,7 @@ If not specified, the <code>full</code> mode is used by default.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-KafkaNodePoolStatus-reference">161. <code>KafkaNodePoolStatus</code> schema reference</h2>
+<h2 id="type-KafkaNodePoolStatus-reference">162. <code>KafkaNodePoolStatus</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Used in: <a href="#type-KafkaNodePool-reference"><code>KafkaNodePool</code></a></p>
@@ -17245,7 +17323,7 @@ If not specified, the <code>full</code> mode is used by default.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-StrimziPodSet-reference">162. <code>StrimziPodSet</code> schema reference</h2>
+<h2 id="type-StrimziPodSet-reference">163. <code>StrimziPodSet</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p><a href="#type-StrimziPodSet-schema-reference">Full list of <code>StrimziPodSet</code> schema properties</a></p>
@@ -17265,7 +17343,7 @@ Do not create, modify or delete <code>StrimziPodSet</code> resources as this mig
 </table>
 </div>
 <div class="sect2">
-<h3 id="type-StrimziPodSet-schema-reference">162.1. <code>StrimziPodSet</code> schema properties</h3>
+<h3 id="type-StrimziPodSet-schema-reference">163.1. <code>StrimziPodSet</code> schema properties</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 28.5714%;">
@@ -17300,7 +17378,7 @@ Do not create, modify or delete <code>StrimziPodSet</code> resources as this mig
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-StrimziPodSetSpec-reference">163. <code>StrimziPodSetSpec</code> schema reference</h2>
+<h2 id="type-StrimziPodSetSpec-reference">164. <code>StrimziPodSetSpec</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Used in: <a href="#type-StrimziPodSet-reference"><code>StrimziPodSet</code></a></p>
@@ -17338,7 +17416,7 @@ Do not create, modify or delete <code>StrimziPodSet</code> resources as this mig
 </div>
 </div>
 <div class="sect1">
-<h2 id="type-StrimziPodSetStatus-reference">164. <code>StrimziPodSetStatus</code> schema reference</h2>
+<h2 id="type-StrimziPodSetStatus-reference">165. <code>StrimziPodSetStatus</code> schema reference</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Used in: <a href="#type-StrimziPodSet-reference"><code>StrimziPodSet</code></a></p>
@@ -17399,7 +17477,7 @@ Do not create, modify or delete <code>StrimziPodSet</code> resources as this mig
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2024-10-30 09:37:41 UTC
+Last updated 2024-12-17 10:52:43 UTC
 </div>
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
