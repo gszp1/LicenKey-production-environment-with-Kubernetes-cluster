@@ -57,3 +57,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/docker-l
 
 # Install Strimzi in cluster
 ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/install.yaml
+
+# Add Strimzi roles
+ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/roles.yaml

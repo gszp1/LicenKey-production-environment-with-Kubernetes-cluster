@@ -1,0 +1,14 @@
+- name: Adds strimzi roles
+  hosts: control_plane
+  vars:
+    source_files_path: /shared_storage/drivers_CRD/strimzi
+  tasks:
+    - name: Create strimzi-admin cluster role
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ source_files_path }}/install/strimzi-admin/010-ClusterRole-strimzi-admin.yaml"
+
+    - name: Create strimzi-view cluster role
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ source_files_path }}/install/strimzi-admin/020-ClusterRole-strimzi-view.yaml"
