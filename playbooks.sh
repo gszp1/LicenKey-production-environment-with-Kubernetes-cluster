@@ -54,3 +54,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/routing-
 
 # Make all nodes login to docker registry
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/docker-login.yaml
+
+# Install Strimzi in cluster
+ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/install.yaml
