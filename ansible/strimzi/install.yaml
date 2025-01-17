@@ -19,14 +19,21 @@
         kind: Namespace
         state: present
 
+    - name: Get installation files for modifying
+      become: true
+      ansible.builtin.find:
+        paths: "{{ source_files_path }}/install/cluster-operator"
+        patterns: "*RoleBinding*.yaml"
+        recurse: false
+      register: installation_files
+
     - name: Modify installation files to reference cluster operator namespace
       become: true
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'namespace: .*'
         replace: "namespace: {{ operator_ns }}"
-      with_fileglob:
-        - "{{ source_files_path }}/install/cluster-operator/*RoleBinding*.yaml"
+      loop: "{{ installation_files.files }}"
 
     - name: Modify STRIMZI_NAMESPACE env in 060-Deployment-strimzi-cluster-operator.yaml
       become: true
@@ -35,20 +42,28 @@
         regexp: '(\s{12}- name: STRIMZI_NAMESPACE\n\s{14}value: ).*'
         replace: '\1{{ deployment_ns }}'
 
-    - name: Add permisions for cluster operator to watch cluster deployment namespace
+    - name: Add permissions for cluster operator to watch cluster deployment namespace
       kubernetes.core.k8s:
         state: present
         src: "{{ source_files_path }}/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml"
         namespace: "{{ deployment_ns }}"
 
-    - name: Add permisions for cluster operator to watch cluster deployment namespace
+    - name: Add permissions for cluster operator to watch cluster deployment namespace
       kubernetes.core.k8s:
         state: present
-        src: "{{ source_files_path }}install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml"
+        src: "{{ source_files_path }}/install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml"
         namespace: "{{ deployment_ns }}"
+
+    - name: Get all manifest files from cluster-operator directory
+      ansible.builtin.find:
+        paths: "{{ source_files_path }}/install/cluster-operator/"
+        patterns: "*.yaml"
+        recurse: false
+      register: manifest_files
 
     - name: Deploy CRDs and RBAC resources to manage CRDs
       kubernetes.core.k8s:
         state: present
-        src: "{{ source_files_path }}install/cluster-operator/"
+        src: "{{ item.path }}"
         namespace: "{{ operator_ns }}"
+      loop: "{{ manifest_files.files }}"
