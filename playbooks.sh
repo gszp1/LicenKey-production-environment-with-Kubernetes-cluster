@@ -69,3 +69,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-kourier.yaml
 
 # Install KNative Eventing component
 ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-eventing.yaml
+
+# Instal KNative Eventing Kafka components
+ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-eventing-kafka.yaml
