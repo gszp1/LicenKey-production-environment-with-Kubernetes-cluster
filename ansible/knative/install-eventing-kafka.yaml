@@ -1,0 +1,22 @@
+- name: Install Kafka components for KNative Eventing module.
+  hosts: control_plane
+  tasks:
+    - name: Install Kafka controller
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/kafka/eventing-kafka-controller.yaml
+        state: present
+
+    - name: Install Kafka Channel data plane
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/kafka/eventing-kafka-channel.yaml
+        state: present
+
+    - name: Install Kafka Broker data plane
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/kafka/eventing-kafka-broker.yaml
+        state: present
+
+    - name: Install Kafka Source
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/kafka/eventing-kafka-source.yaml
+        state: present
