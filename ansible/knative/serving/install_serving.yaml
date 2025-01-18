@@ -1,0 +1,12 @@
+- name: Install Knative Serving component.
+  hosts: control_plane
+  tasks:
+    - name: Install required custom resources
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/serving/serving-crds.yaml
+        state: present
+
+    - name: Install core components
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/serving/serving-core.yaml
+        state: present
