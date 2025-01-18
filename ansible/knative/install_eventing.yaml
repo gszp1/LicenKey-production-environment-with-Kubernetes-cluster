@@ -1,0 +1,12 @@
+- name: Install KNative Eventing component.
+  hosts: control_plane
+  tasks:
+    - name: Install required custom resource definitions
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/eventing/eventing-crds.yaml
+        state: present
+
+    - name: Install core components
+      kubernetes.core.k8s:
+        src: /shared_storage/drivers_CRD/knative/eventing/eventing-core.yaml
+        state: present
