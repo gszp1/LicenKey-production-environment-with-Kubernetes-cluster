@@ -1,21 +1,6 @@
 - name: Create KRaft kafka cluster
   hosts: control_plane
   tasks:
-    - name: Create persistent volume for controller node
-      kubernetes.core.k8s:
-        src: /shared_storage/manifests/kafka-cluster/controller-node-pv.yaml
-        state: present
-
-    - name: Create persistent volume for broker-0 node
-      kubernetes.core.k8s:
-        src: /shared_storage/manifests/kafka-cluster/broker-0-node-pv.yaml
-        state: present
-
-    - name: Create persistent volume for broker-1 node
-      kubernetes.core.k8s:
-        src: /shared_storage/manifests/kafka-cluster/broker-1-node-pv.yaml
-        state: present
-
     - name: Create kafka cluster
       kubernetes.core.k8s:
         src: /shared_storage/manifests/kafka-cluster/kafka-cluster.yaml
