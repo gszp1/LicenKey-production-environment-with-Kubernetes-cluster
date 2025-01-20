@@ -1,8 +1,8 @@
 - name: Install Strimzi with CRDs and RBAC configuration
   hosts: control_plane
   vars:
-    operator_ns: kafka
-    deployment_ns: kafka-cluster
+    operator_ns: kafka-operator-ns
+    deployment_ns: kafka-cluster-ns
     source_files_path: /shared_storage/drivers_CRD/strimzi
   tasks:
     - name: Create namespace "kafka" for cluster operator
