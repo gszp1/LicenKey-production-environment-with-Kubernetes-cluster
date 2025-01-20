@@ -6,7 +6,7 @@ metadata:
   name: kafka-controller-node-pv
 spec:
   capacity:
-    storage: 10Gi
+    storage: 15Gi
   accessModes:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain

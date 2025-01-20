@@ -61,6 +61,9 @@ ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/install.yaml
 # Add Strimzi roles
 ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/roles.yaml
 
+#Install kafka cluster
+ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/cluster.yaml
+
 # Install KNative Serving component
 ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-serving.yaml
 
