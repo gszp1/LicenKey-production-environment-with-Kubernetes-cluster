@@ -18,9 +18,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/htpasswd
 # Sets up NFS Container Storage Interface driver
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/csi.yaml
 
-# Creates NFS Storage Class
-ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/nfs-storage-class.yaml
-
 # Sets up Helm on master node
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/helm.yaml
 
@@ -57,6 +54,9 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/routing-
 
 # Make all nodes login to docker registry
 ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/docker-login.yaml
+
+# Creates NFS Storage Class
+ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/nfs-storage-class.yaml
 
 # Install Strimzi in cluster
 ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/install.yaml

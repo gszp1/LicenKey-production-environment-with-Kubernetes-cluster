@@ -14,7 +14,6 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        storageClass: nfs-storage-class
         kraftMetadata: shared
         size: 20Gi
         deleteClaim: false
@@ -36,13 +35,11 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        storageClass: nfs-storage-class
         size: 10Gi
         kraftMetadata: shared
         deleteClaim: false 
       - id: 1
         type: persistent-claim
-        storageClass: nfs-storage-class
         size: 20Gi
         deleteClaim: false
 ---
@@ -63,13 +60,11 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        storageClass: nfs-storage-class
         size: 10Gi
         kraftMetadata: shared
         deleteClaim: false 
       - id: 1
         type: persistent-claim
-        storageClass: nfs-storage-class
         size: 20Gi
         deleteClaim: false
 ---

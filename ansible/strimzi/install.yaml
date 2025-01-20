@@ -5,14 +5,14 @@
     deployment_ns: kafka-cluster-ns
     source_files_path: /shared_storage/drivers_CRD/strimzi
   tasks:
-    - name: Create namespace "kafka" for cluster operator
+    - name: Create namespace "kafka-operator-ns" for cluster operator
       kubernetes.core.k8s:
         api_version: v1
         name: "{{ operator_ns }}"
         kind: Namespace
         state: present
 
-    - name: Create namespace "kafka-cluster" for kafka cluster deployment
+    - name: Create namespace "kafka-cluster-ns" for kafka cluster deployment
       kubernetes.core.k8s:
         api_version: v1
         name: "{{ deployment_ns }}"
@@ -37,15 +37,37 @@
 
     - name: Modify STRIMZI_NAMESPACE env in 060-Deployment-strimzi-cluster-operator.yaml
       become: true
-      ansible.builtin.replace:
-        path: "{{ source_files_path }}/install/cluster-operator/060-Deployment-strimzi-cluster-operator.yaml"
-        regexp: '(\s{12}- name: STRIMZI_NAMESPACE\n\s{14}value: ).*'
-        replace: '\1{{ deployment_ns }}'
+      ansible.builtin.shell:
+        cmd: "sed -i '/- name: STRIMZI_NAMESPACE/{n; s/value:.*/value: {{ operator_ns }},{{ deployment_ns }}/}' {{ source_files_path }}/install/cluster-operator/060-Deployment-strimzi-cluster-operator.yaml"
+
+    - name: Add permissions for cluster operator to watch cluster operator namespace
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ source_files_path }}/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml"
+        namespace: "{{ operator_ns }}"
+
+    - name: Add permissions for cluster operator
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ source_files_path }}/install/cluster-operator/023-RoleBinding-strimzi-cluster-operator.yaml"
+        namespace: "{{ operator_ns }}"
+
+    - name: Add permissions for cluster operator to watch cluster operator namespace
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ source_files_path }}/install/cluster-operator/031-RoleBinding-strimzi-cluster-operator-entity-operator-delegation.yaml"
+        namespace: "{{ operator_ns }}"
 
     - name: Add permissions for cluster operator to watch cluster deployment namespace
       kubernetes.core.k8s:
         state: present
         src: "{{ source_files_path }}/install/cluster-operator/020-RoleBinding-strimzi-cluster-operator.yaml"
+        namespace: "{{ deployment_ns }}"
+
+    - name: Add permissions for cluster operator
+      kubernetes.core.k8s:
+        state: present
+        src: "{{ source_files_path }}/install/cluster-operator/023-RoleBinding-strimzi-cluster-operator.yaml"
         namespace: "{{ deployment_ns }}"
 
     - name: Add permissions for cluster operator to watch cluster deployment namespace
