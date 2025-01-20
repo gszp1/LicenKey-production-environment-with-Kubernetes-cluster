@@ -6,7 +6,7 @@ metadata:
     strimzi.io/cluster: kafka-cluster
   namespace: kafka-cluster-ns
 spec:
-  replicas: 3
+  replicas: 1
   roles:
     - controller
   storage:
@@ -22,12 +22,12 @@ spec:
 apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
-  name: broker
+  name: broker-0
   labels:
     strimzi.io/cluster: kafka-cluster
   namespace: kafka-cluster-ns
 spec:
-  replicas: 3
+  replicas: 1
   roles:
     - broker
   storage:
@@ -38,7 +38,23 @@ spec:
         existingClaim: kafka-broker-0-node-pvc
         kraftMetadata: shared
         deleteClaim: false
-      - id: 1
+---
+
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: broker-1
+  labels:
+    strimzi.io/cluster: kafka-cluster
+  namespace: kafka-cluster-ns
+spec:
+  replicas: 1
+  roles:
+    - broker
+  storage:
+    type: jbod
+    volumes:
+      - id: 0
         type: persistent-claim
         existingClaim: kafka-broker-1-node-pvc
         kraftMetadata: shared
