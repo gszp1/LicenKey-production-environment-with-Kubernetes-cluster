@@ -1,0 +1,7 @@
+- name: Adds NFS Storage Class to cluster
+  hosts: control_plane
+  tasks:
+    - name: Create NFS Storage Class
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/configuration/nfs-storage-class.yaml
+        state: present

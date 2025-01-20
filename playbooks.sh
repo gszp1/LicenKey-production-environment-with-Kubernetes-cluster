@@ -18,6 +18,9 @@ ansible-playbook -i ./build/hosts.ini ./ansible/docker-registry/routing/htpasswd
 # Sets up NFS Container Storage Interface driver
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/csi.yaml
 
+# Creates NFS Storage Class
+ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/nfs-storage-class.yaml
+
 # Sets up Helm on master node
 ansible-playbook -i ./build/hosts.ini ./ansible/cluster-config/helm.yaml
 
