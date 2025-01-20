@@ -4,6 +4,7 @@ metadata:
   name: controller
   labels:
     strimzi.io/cluster: kafka-cluster
+  namespace: kafka-cluster-ns
 spec:
   replicas: 3
   roles:
@@ -13,7 +14,7 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 10Gi
+        existingClaim: kafka-controller-node-pvc
         kraftMetadata: shared
         deleteClaim: false
 ---
@@ -24,6 +25,7 @@ metadata:
   name: broker
   labels:
     strimzi.io/cluster: kafka-cluster
+  namespace: kafka-cluster-ns
 spec:
   replicas: 3
   roles:
@@ -33,7 +35,12 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 20Gi
+        existingClaim: kafka-broker-0-node-pvc
+        kraftMetadata: shared
+        deleteClaim: false
+      - id: 1
+        type: persistent-claim
+        existingClaim: kafka-broker-1-node-pvc
         kraftMetadata: shared
         deleteClaim: false
 ---
@@ -45,6 +52,7 @@ metadata:
   annotations:
     strimzi.io/node-pools: enabled
     strimzi.io/kraft: enabled
+  namespace: kafka-cluster-ns
 spec:
   kafka:
     version: 3.9.0
