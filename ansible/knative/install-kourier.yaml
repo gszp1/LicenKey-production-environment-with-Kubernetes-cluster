@@ -8,7 +8,7 @@
 
     - name: Configure Knative Serving to use Kourier by default
       kubernetes.core.k8s:
-        namespace: knative-eventing
+        namespace: knative-serving
         kind: ConfigMap
         name: config-network
         definition:

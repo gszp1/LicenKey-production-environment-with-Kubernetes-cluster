@@ -1,0 +1,1 @@
+kubectl logs -f --selector='serving.knative.dev/service=knative-test-service' -c user-container
