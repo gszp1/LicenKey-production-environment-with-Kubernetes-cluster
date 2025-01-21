@@ -1,0 +1,16 @@
+apiVersion: sources.knative.dev/v1beta1
+kind: KafkaSource
+metadata:
+  name: kafka-source
+spec:
+  consumerGroup: <my-consumer-group>
+  bootstrapServers:
+    - kafka-cluster-kafka-bootstrap.kafka-cluster-ns:9092 # e.g. my-cluster-kafka-bootstrap.kafka-cluster:9092
+  topics:
+    - test-topic
+  consumers: 6
+  sink:
+    ref:
+      apiVersion: serving.knative.dev/v1
+      kind: Service
+      name: knative-test-service
