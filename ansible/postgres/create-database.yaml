@@ -1,0 +1,27 @@
+- name: Adds postgres database for running application to kafka-cluster
+  hosts: control_plane
+  tasks:
+    - name: Create namespace 'postgres-db-ns'
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/postgres/postgres-database-ns.yaml
+        state: present
+
+    - name: Create Persistent Volume and Persistent Volume Claim for data storage
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/postgres/postgres-database-pv.yaml
+        state: present
+
+    - name: Create ConfigMap for storing database configuration
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/postgres/postgres-database-config.yaml
+        state: present
+
+    - name: Create Secret for storing database connection credentials
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/postgres/postgres-database-secret.yaml
+        state: present
+
+    - name: Create postgres database from image in local docker registry
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/postgres/postgres-database.yaml
+        state: present
