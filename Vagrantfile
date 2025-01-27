@@ -15,7 +15,7 @@ Vagrant.configure("2") do |config|
       connected.vm.hostname = "vm#{i}"
       connected.vm.network "private_network", ip: "192.168.0.#{i+1}", virtualbox__intnet: "internal"
       connected.vm.network "private_network", ip: "192.168.56.#{i+1}"
-      connected.vm.synced_folder "./data", "/shared_storage", type: "nfs", nfs_version: 3, nfs_udp: false
+      connected.vm.synced_folder "./data", "/shared_storage", type: "nfs", nfs_version: 3, nfs_udp: false, linux__nfs_options: ['rw', 'no_root_squash']
     end
   end
 end
