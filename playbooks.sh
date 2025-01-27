@@ -64,7 +64,7 @@ ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/install.yaml
 # Add Strimzi roles
 ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/roles.yaml
 
-#Install kafka cluster
+# Install kafka cluster
 ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/cluster.yaml
 
 # Install KNative Serving component
@@ -78,3 +78,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-eventing.yaml
 
 # Instal KNative Eventing Kafka components
 ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-eventing-kafka.yaml
+
+# Install Postgres database in cluster
+ansible-playbook -i ./build/hosts.ini ./ansible/postgres/create-database.yaml
