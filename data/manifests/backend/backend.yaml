@@ -47,6 +47,16 @@ spec:
               configMapKeyRef:
                 name: backend-config
                 key: acks
+          - name: ORDERS_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: orders-topic
+          - name: NOTIFICATION_TOPIC
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: notification-topic
         volumeMounts:
           - name: backend-logs-volume
             mountPath: /var/logs/backend

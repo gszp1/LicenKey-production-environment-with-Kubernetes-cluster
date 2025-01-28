@@ -9,3 +9,5 @@ data:
   kafka_bootstrap_server: kafka-cluster-kafka-bootstrap.kafka-cluster-ns:9092
   retries: '3'
   acks: all
+  orders-topic: 'orders'
+  notification-topic: 'notifications'
