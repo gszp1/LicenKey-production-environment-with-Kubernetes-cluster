@@ -21,6 +21,24 @@
         src: '/shared_storage/manifests/backend/backend-credentials.yaml'
         state: present
 
+    - name: Wait for postgres database to be ready
+      kubernetes.core.k8s_info:
+        kind: Deployment
+        wait: true
+        name: postgres-db
+        namespace: postgres-db-ns
+        wait_sleep: 6
+        wait_timeout: 240
+
+    - name: Wait for kafka topics to be ready
+      kubernetes.core.k8s_info:
+        kind: KafkaTopic
+        wait: true
+        name: orders
+        namespace: kafka-cluster-ns
+        wait_sleep: 6
+        wait_timeout: 240
+
     - name: Add backend application
       kubernetes.core.k8s:
         src: '/shared_storage/manifests/backend/backend.yaml'
