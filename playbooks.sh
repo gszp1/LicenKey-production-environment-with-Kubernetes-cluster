@@ -81,3 +81,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/knative/install-eventing-kafka.y
 
 # Install Postgres database in cluster
 ansible-playbook -i ./build/hosts.ini ./ansible/postgres/create-database.yaml
+
+# Create kafka topics
+ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/create-topics.yaml
