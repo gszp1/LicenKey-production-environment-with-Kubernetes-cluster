@@ -11,3 +11,4 @@ data:
   acks: all
   orders-topic: 'orders'
   notification-topic: 'notifications'
+  cors-allowed-host: 'http://192.168.56.1'

@@ -57,6 +57,11 @@ spec:
               configMapKeyRef:
                 name: backend-config
                 key: notification-topic
+          - name: CORS_ALLOWED_HOST
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: cors-allowed-host
         volumeMounts:
           - name: backend-logs-volume
             mountPath: /var/logs/backend
