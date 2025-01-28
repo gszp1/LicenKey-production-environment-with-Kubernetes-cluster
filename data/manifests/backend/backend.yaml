@@ -47,10 +47,6 @@ spec:
               configMapKeyRef:
                 name: backend-config
                 key: acks
-        resources:
-          limits:
-            memory: "128Mi"
-            cpu: "500m"
         volumeMounts:
           - name: backend-logs-volume
             mountPath: /var/logs/backend
