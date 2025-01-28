@@ -1,0 +1,27 @@
+- name: Adds backend application to cluster
+  hosts: control_plane
+  tasks:
+    - name: Add namespace 'backend-ns'
+      kubernetes.core.k8s:
+        src: '/shared_storage/manifests/backend/backend-ns.yaml'
+        state: present
+
+    - name: Add persistent volume claim for logs directory
+      kubernetes.core.k8s:
+        src: '/shared_storage/manifests/backend/backend-pvc.yaml'
+        state: present
+
+    - name: Add backend configuration ConfigMap
+      kubernetes.core.k8s:
+        src: '/shared_storage/manifests/backend/backend-config.yaml'
+        state: present
+
+    - name: Add credentials secret for backend app
+      kubernetes.core.k8s:
+        src: '/shared_storage/manifests/backend/backend-credentials.yaml'
+        state: present
+
+    - name: Add backend application
+      kubernetes.core.k8s:
+        src: '/shared_storage/manifests/backend/backend.yaml'
+        state: present
