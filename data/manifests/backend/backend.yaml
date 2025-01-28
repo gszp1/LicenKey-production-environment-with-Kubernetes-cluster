@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: licen-key-backend
-        image: docker-registry.cluster.local/licen-key-backend
+        image: docker-registry.cluster.local/licen-key-backend:1.0.0
         env:
           - name: DATASOURCE_URL
             valueFrom:
