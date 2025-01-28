@@ -66,4 +66,18 @@ spec:
         - name: backend-logs-volume
           persistentVolumeClaim:
             claimName: backend-pvc
+---
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+  namespace: backend-ns
+spec:
+  selector:
+    app: backend
+  type: NodePort
+  ports:
+  - port: 9000
+    targetPort: 9000
+    nodePort: 30004
