@@ -84,3 +84,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/postgres/create-database.yaml
 
 # Create kafka topics
 ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/create-topics.yaml
+
+# Create backend application
+ansible-playbook -i ./build/hosts.ini ./ansible/backend/create-backend-app.yaml
