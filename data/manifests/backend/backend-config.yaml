@@ -4,8 +4,8 @@ metadata:
   name: backend-config
   namespace: backend-ns
 data:
+  spring_profile: cloud
   datasource_url: postgres-service.postgres-db-ns:5432
   kafka_bootstrap_server: kafka-cluster-kafka-bootstrap.kafka-cluster-ns:9092
   retries: '3'
   acks: all
-  application_port: '9000'

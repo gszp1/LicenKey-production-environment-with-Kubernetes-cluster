@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+  namespace: backend-ns
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: licen-key-backend
+        image: doceker-registry.cluster.local/licen-key-backend
+        env:
+          - name: DATASOURCE_URL
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: datasource_url
+          - name: DATASOURCE_USER
+            valueFrom:
+              secretKeyRef:
+                name: backend-credentials
+                key: datasource_user
+          - name: DATASOURCE_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: backend-credentials
+                key: datasource_password
+          - name: KAFKA_BOOTSTRAP_SERVER
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: kafka_bootstrap_server
+          - name: RETRIES
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: retries
+          - name: ACKS
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: acks
+        resources:
+          limits:
+            memory: "128Mi"
+            cpu: "500m"
+        volumeMounts:
+          - name: backend-logs-volume
+            mountPath: /var/logs/backend
+        ports:
+          - containerPort: 9000
+      volumes:  
+        - name: backend-logs-volume
+          persistentVolumeClaim:
+            claimName: backend-pvc
+
