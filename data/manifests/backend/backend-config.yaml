@@ -5,10 +5,10 @@ metadata:
   namespace: backend-ns
 data:
   spring_profile: cloud
-  datasource_url: postgres-service.postgres-db-ns:5432
+  datasource_url: jdbc:postgresql://postgres-service.postgres-db-ns:5432/licen_key_db
   kafka_bootstrap_server: kafka-cluster-kafka-bootstrap.kafka-cluster-ns:9092
   retries: '3'
   acks: all
   orders-topic: 'orders'
   notification-topic: 'notifications'
-  cors-allowed-host: 'http://192.168.56.1'
+  cors-allowed-host: 'http://localhost:9091'

@@ -17,6 +17,11 @@ spec:
       - name: licen-key-backend
         image: docker-registry.cluster.local/licen-key-backend:1.0.0
         env:
+          - name: SPRING_PROFILES_ACTIVE
+            valueFrom:
+              configMapKeyRef:
+                name: backend-config
+                key: spring_profile
           - name: DATASOURCE_URL
             valueFrom:
               configMapKeyRef:
