@@ -1,0 +1,16 @@
+- name: Adds topics to kafka cluster
+  hosts: control_plane
+  tasks:
+    - name: Wait for cluster to be ready
+      kubernetes.core.k8s_info:
+        kind: Deployment
+        wait: true
+        name: kafka-cluster-entity-operator
+        namespace: kafka-cluster-ns
+        wait_sleep: 5
+        wait_timeout: 300
+
+    - name: Create topics
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/kafka-cluster/topics.yaml
+        state: present
