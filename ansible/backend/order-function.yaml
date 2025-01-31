@@ -1,0 +1,22 @@
+- name: Adds order-function cloud function to cluster
+  hosts: control_plane
+  tasks:
+    - name: Create configmap with function config
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/order-function/orders-function-config.yaml
+        state: present
+
+    - name: Create secret with database credentials
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/order-function/orders-function-cred.yaml
+        state: present
+
+    - name: Create knative service for function
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/order-function/orders-service.yaml
+        state: present
+
+    - name: Create kafka source
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/order-function/kafka-source.yaml
+        state: present

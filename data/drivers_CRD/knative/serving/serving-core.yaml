@@ -9116,8 +9116,15 @@ spec:
                 topologyKey: kubernetes.io/hostname
               weight: 100
       serviceAccountName: controller
+      volumes:
+        - name: custom-certs
+          secret:
+            secretName: customca
       containers:
         - name: controller
+          volumeMounts:
+            - name: custom-certs
+              mountPath: /var/certs/knative
           # This is the Go import path for the binary that is containerized
           # and substituted here.
           image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:5fb22b052e6bc98a1a6bbb68c0282ddb50744702acee6d83110302bc990666e9
@@ -9129,6 +9136,8 @@ spec:
               cpu: 1000m
               memory: 1000Mi
           env:
+            - name: SSL_CERT_DIR
+              value: /var/certs/knative
             - name: POD_NAME
               valueFrom:
                 fieldRef:

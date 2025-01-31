@@ -87,3 +87,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/strimzi/create-topics.yaml
 
 # Create backend application
 ansible-playbook -i ./build/hosts.ini ./ansible/backend/create-backend-app.yaml
+
+# Create knative service for orders function
+ansible-playbook -i ./build/hosts.ini ./ansible/backend/order-function.yaml

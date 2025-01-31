@@ -12,6 +12,8 @@ spec:
         autoscaling.knative.dev/minScale: "0"
         autoscaling.knative.dev/maxScale: "6"
     spec:
+      imagePullSecrets:
+        - name: docker-registry-credentials
       containers:
         - image: docker-registry.cluster.local/order-function:2.0.0
           env:

@@ -21,6 +21,24 @@
         src: '/shared_storage/manifests/backend/backend-credentials.yaml'
         state: present
 
+    - name: Load docker-credentials-json from file
+      ansible.builtin.slurp:
+        src: /shared_storage/share/docker-credentials-json
+      register: docker_credentials_json
+
+    - name: Create secret with docker credentials used in manifests
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: docker-registry-credentials
+            namespace: backend-ns
+          type: kubernetes.io/dockerconfigjson
+          data:
+            .dockerconfigjson: "{{ docker_credentials_json.content }}"
+
     - name: Wait for postgres database to be ready
       kubernetes.core.k8s_info:
         kind: Deployment

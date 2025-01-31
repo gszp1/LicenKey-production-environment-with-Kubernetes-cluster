@@ -6,6 +6,51 @@
         src: /shared_storage/drivers_CRD/knative/serving/serving-crds.yaml
         state: present
 
+    - name: Create the knative-serving namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Namespace
+          metadata:
+            name: knative-serving
+
+    - name: Load docker-credentials-json from file
+      ansible.builtin.slurp:
+        src: /shared_storage/share/docker-credentials-json
+      register: docker_credentials_json
+
+    - name: Create secret with docker credentials used in manifests (knative-service)
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: docker-registry-credentials
+            namespace: knative-serving
+          type: kubernetes.io/dockerconfigjson
+          data:
+            .dockerconfigjson: "{{ docker_credentials_json.content }}"
+
+    - name: Slurp file from remote host
+      ansible.builtin.slurp:
+        src: /shared_storage/share/ca.crt
+      register: file_data
+
+    - name: Create the customca secret in knative-serving namespace
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Secret
+          metadata:
+            name: customca
+            namespace: knative-serving
+          type: Opaque
+          data:
+            ca.crt: "{{ file_data.content }}"
+
     - name: Install core components
       kubernetes.core.k8s:
         src: /shared_storage/drivers_CRD/knative/serving/serving-core.yaml
