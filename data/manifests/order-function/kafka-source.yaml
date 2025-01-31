@@ -9,6 +9,7 @@ spec:
   topics:
     - orders
   consumers: 6
+  initialOffset: latest
   sink:
     ref:
       apiVersion: serving.knative.dev/v1

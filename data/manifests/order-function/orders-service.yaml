@@ -15,7 +15,7 @@ spec:
       imagePullSecrets:
         - name: docker-registry-credentials
       containers:
-        - image: docker-registry.cluster.local/order-function:2.0.0
+        - image: docker-registry.cluster.local/order-function:7.1.7
           env:
             - name: DATASOURCE_URL
               valueFrom:
