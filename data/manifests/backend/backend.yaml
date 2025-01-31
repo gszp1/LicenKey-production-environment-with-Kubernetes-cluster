@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: licen-key-backend
-        image: docker-registry.cluster.local/licen-key-backend:2.0.0
+        image: docker-registry.cluster.local/licen-key-backend:3.0.0
         env:
           - name: SPRING_PROFILES_ACTIVE
             valueFrom:
