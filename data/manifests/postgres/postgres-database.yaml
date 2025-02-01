@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgres-database
-        image: docker-registry.cluster.local/licen_key_db:3.0.0
+        image: docker-registry.cluster.local/licen_key_db:4.0.0
         env:
           - name: POSTGRES_USER
             valueFrom:
