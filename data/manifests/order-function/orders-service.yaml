@@ -51,6 +51,6 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: orders-function-config
-                  key: keys-topic
+                  key: keys_topic
           ports:
             - containerPort: 9001

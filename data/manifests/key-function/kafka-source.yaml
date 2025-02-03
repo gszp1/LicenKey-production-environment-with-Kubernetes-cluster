@@ -7,7 +7,7 @@ spec:
   bootstrapServers:
     - kafka-cluster-kafka-bootstrap.kafka-cluster-ns:9092 
   topics:
-    - keyFetching
+    - key-fetching
   consumers: 8
   initialOffset: latest
   sink:
