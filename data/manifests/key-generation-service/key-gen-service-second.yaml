@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: key-gen-service-second-deployment
+  namespace: key-gen-ns
+spec:
+  selector:
+    matchLabels:
+      app: key-gen-service-second
+  template:
+    metadata:
+      labels:
+        app: key-gen-service-second
+    spec:
+      containers:
+      - name: key-gen-service-second
+        image: docker-registry.cluster.local/key-generation-service:1.0.0
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: cloud
+          - name: KEY_CODE_TEMPLATE
+            value: "XXXX-XXXX-XXXX-XXXX"
+          - name: ALLOWED_ORIGINS
+            value: "*"
+        ports:
+        - containerPort: 9002
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: key-gen-service-second-svc
+  namespace: key-gen-ns
+spec:
+  selector:
+    app: key-gen-service-second
+  type: NodePort
+  ports:
+  - port: 9012
+    targetPort: 9002
+    nodePort: 30006
+
