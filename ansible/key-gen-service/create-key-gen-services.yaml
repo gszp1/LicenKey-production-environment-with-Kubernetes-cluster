@@ -1,0 +1,22 @@
+- name: Adds key generation services to cluster
+  hosts: control_plane
+  tasks:
+    - name: Create 'key-gen-ns' namespace
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-generation-service/key-gen-ns.yaml
+        state: present
+
+    - name: Create first key generation service
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-generation-service/key-gen-service-first.yaml
+        state: present
+
+    - name: Create second key generation service
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-generation-service/key-gen-service-second.yaml
+        state: present
+
+    - name: Create third key generation service
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-generation-service/key-gen-service-third.yaml
+        state: present
