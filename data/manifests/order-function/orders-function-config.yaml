@@ -7,5 +7,5 @@ data:
   datasource_url: jdbc:postgresql://postgres-service.postgres-db-ns:5432/licen_key_db
   retries: '3'
   acks: all
-  keys_topic: keyFetching
+  keys_topic: key-fetching
   kafka_bootstrap_server: kafka-cluster-kafka-bootstrap.kafka-cluster-ns:9092
