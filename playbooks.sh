@@ -93,3 +93,6 @@ ansible-playbook -i ./build/hosts.ini ./ansible/backend/order-function.yaml
 
 # Create key generation services
 ansible-playbook -i ./build/hosts.ini ./ansible/key-gen-service/create-key-gen-services.yaml
+
+# Create knative service for key function
+ansible-playbook -i ./build/hosts.ini ./ansible/backend/key-function.yaml
