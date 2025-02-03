@@ -1,0 +1,22 @@
+- name: Adds key-function cloud function to cluster
+  hosts: control_plane
+  tasks:
+    - name: Create configmap with function config
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-function/keys-function-config.yaml
+        state: present
+
+    - name: Create secret with database credentials
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-function/keys-function-cred.yaml
+        state: present
+
+    - name: Create knative service for function
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-function/keys-service.yaml
+        state: present
+
+    - name: Create kafka source
+      kubernetes.core.k8s:
+        src: /shared_storage/manifests/key-function/kafka-source.yaml
+        state: present
