@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: keys-function-cred
+  namespace: backend-ns
+type: Opaque
+data:
+  datasource_user: bGljZW5fa2V5X3VzZXI=
+  datasource_password: MmxKMWNfeUMjMU1KMGUoKS5re3AoOUE=

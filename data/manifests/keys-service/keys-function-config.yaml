@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: keys-function-config
+  namespace: backend-ns
+data:
+  datasource_url: jdbc:postgresql://postgres-service.postgres-db-ns:5432/licen_key_db
