@@ -1,0 +1,36 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  annotations:
+    pv.kubernetes.io/provisioned-by: nfs.csi.k8s.io
+  name: image-service-pv
+spec:
+  capacity:
+    storage: 20Gi
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - nfsvers=4.1
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeHandle: 192.168.56.1#/home/mateusz/nfs/image-service-volume
+    volumeAttributes:
+      server: 192.168.56.1
+      share: /home/mateusz/nfs/image-service-volume
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: image-service-pvc
+  namespace: image-service-ns
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: image-service-pv
